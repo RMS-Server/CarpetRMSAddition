@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "rms.mixin",
+	"compatibilityLevel": "JAVA_16",
+	"mixins": [
+		"ExampleMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

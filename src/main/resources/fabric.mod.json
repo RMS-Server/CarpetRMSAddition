@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+	"id": "carpet-rms-addition",
+	"version": "${version}",
+	"name": "Carpet RMS Addition",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/carpet-rms-addition/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"rms.CarpetRMSAddition"
+		]
+	},
+	"mixins": [
+		"carpet-rms-addition.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.14",
+		"minecraft": "~1.17",
+		"java": ">=16",
+		"fabric": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
