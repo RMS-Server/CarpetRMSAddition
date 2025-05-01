@@ -3,6 +3,9 @@
 	"package": "rms.mixin",
 	"compatibilityLevel": "JAVA_16",
 	"mixins": [
+		"BoatEntityAccessor",
+		"EntityAccessor",
+		"EntityDataObjectMixin",
 		"HostileEntityMixin",
 		"LightingProviderAccessor"
 	],

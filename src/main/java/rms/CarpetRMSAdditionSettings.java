@@ -15,6 +15,8 @@ public class CarpetRMSAdditionSettings {
     @SuppressWarnings("unused")
     @Rule(desc = "Override the sky light level when spawning monsters", category = {RMS}, options = {"false", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"}, validate = OverrideSkyLightLevelValidator.class)
     public static String overrideMonsterSkyLightLevel = "false";
+    @Rule(desc = "Make /data get return more nbt", category = {RMS})
+    public static boolean enhancedDataGet = false;
 
     private static int parseLightLevel(final String lightLevel) {
         return switch (lightLevel) {
