@@ -7,7 +7,8 @@
 		"EntityAccessor",
 		"EntityDataObjectMixin",
 		"HostileEntityMixin",
-		"LightingProviderAccessor"
+		"LightingProviderAccessor",
+		"SettingsManagerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

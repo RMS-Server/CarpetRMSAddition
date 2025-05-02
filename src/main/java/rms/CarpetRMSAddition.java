@@ -3,15 +3,27 @@ package rms;
 import carpet.CarpetExtension;
 import carpet.CarpetServer;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.metadata.ModMetadata;
 
 public class CarpetRMSAddition implements CarpetExtension, ModInitializer {
-    @Override
-    public String version() {
-        return "carpet-rms-addition";
+    private static final String ID = "carpet-rms-addition";
+    private static String name;
+    private static String version;
+
+    public static String getName() {
+        return name;
+    }
+
+    public static String getVersion() {
+        return version;
     }
 
     @Override
     public void onInitialize() {
+        final ModMetadata metadata = FabricLoader.getInstance().getModContainer(ID).orElseThrow(IllegalStateException::new).getMetadata();
+        name = metadata.getName();
+        version = metadata.getVersion().getFriendlyString();
         CarpetServer.manageExtension(new CarpetRMSAddition());
     }
 
