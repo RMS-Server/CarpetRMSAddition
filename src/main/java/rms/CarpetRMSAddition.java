@@ -6,7 +6,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
-public class CarpetRMSAddition implements CarpetExtension, ModInitializer {
+public final class CarpetRMSAddition implements CarpetExtension, ModInitializer {
     private static final String ID = "carpet-rms-addition";
     private static String name;
     private static String version;

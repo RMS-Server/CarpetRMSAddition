@@ -3,12 +3,18 @@ package rms;
 import carpet.settings.ParsedRule;
 import carpet.settings.Rule;
 import carpet.settings.Validator;
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import net.minecraft.entity.EntityType;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.world.ThreadedAnvilChunkStorage;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
-public class CarpetRMSAdditionSettings {
-    public static final String RMS = "RMS";
-    public static int blockLightLevel = -1;
-    public static int skyLightLevel = -1;
+import java.util.Optional;
+
+public final class CarpetRMSAdditionSettings {
+    private static final String RMS = "RMS";
+    private static final ReferenceArrayList<ThreadedAnvilChunkStorage> chunkStorages = new ReferenceArrayList<>();
     @SuppressWarnings("unused")
     @Rule(desc = "Override the block light level when spawning monsters", category = {RMS}, options = {"false", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"}, validate = OverrideBlockLightLevelValidator.class)
     public static String overrideMonsterBlockLightLevel = "false";
@@ -17,6 +23,46 @@ public class CarpetRMSAdditionSettings {
     public static String overrideMonsterSkyLightLevel = "false";
     @Rule(desc = "Make /data get return more nbt", category = {RMS})
     public static boolean enhancedDataGet = false;
+    @SuppressWarnings("unused")
+    @Rule(desc = "A list of entities, in the form of [minecraft:boat,minecraft:creeper], for each the server will not send update packets", category = {RMS}, validate = InterceptUpdatePacketEntitiesValidator.class)
+    public static String interceptUpdatePacketEntities = "[]";
+    @SuppressWarnings("unused")
+    @Rule(desc = "A list of entities, in the form of [minecraft:boat,minecraft:creeper], for each the server will not send all packets and immediately remove from client. This takes precedence over interceptUpdatePacketEntities", category = {RMS}, validate = InterceptAllPacketEntitiesValidator.class)
+    public static String interceptAllPacketEntities = "[]";
+    private static int blockLightLevel = -1;
+    private static int skyLightLevel = -1;
+    private static boolean keepBlockLightLevel = true;
+    private static boolean keepSkyLightLevel = true;
+    private static ReferenceArrayList<EntityType<?>> interceptUpdatePacketsEntityTypes = new ReferenceArrayList<>();
+    private static ReferenceArrayList<EntityType<?>> interceptAllPacketsEntityTypes = new ReferenceArrayList<>();
+
+    public static int getBlockLightLevel() {
+        return blockLightLevel;
+    }
+
+    public static int getSkyLightLevel() {
+        return skyLightLevel;
+    }
+
+    public static boolean isKeepingBlockLightLevel() {
+        return keepBlockLightLevel;
+    }
+
+    public static boolean isKeepingSkyLightLevel() {
+        return keepSkyLightLevel;
+    }
+
+    public static void registerChunkStorage(ThreadedAnvilChunkStorage chunkStorage) {
+        chunkStorages.add(chunkStorage);
+    }
+
+    public static ReferenceArrayList<EntityType<?>> getInterceptUpdatePacketsEntityTypes() {
+        return interceptUpdatePacketsEntityTypes;
+    }
+
+    public static ReferenceArrayList<EntityType<?>> getInterceptAllPacketsEntityTypes() {
+        return interceptAllPacketsEntityTypes;
+    }
 
     private static int parseLightLevel(final String lightLevel) {
         return switch (lightLevel) {
@@ -44,6 +90,7 @@ public class CarpetRMSAdditionSettings {
         @Override
         public String validate(ServerCommandSource source, ParsedRule<String> currentRule, String newValue, String string) {
             blockLightLevel = parseLightLevel(newValue);
+            keepBlockLightLevel = blockLightLevel == -1;
             return newValue;
         }
     }
@@ -52,7 +99,76 @@ public class CarpetRMSAdditionSettings {
         @Override
         public String validate(ServerCommandSource source, ParsedRule<String> currentRule, String newValue, String string) {
             skyLightLevel = parseLightLevel(newValue);
+            keepSkyLightLevel = skyLightLevel == -1;
             return newValue;
+        }
+    }
+
+    private abstract static class InterceptPacketEntitiesValidator extends Validator<String> {
+        protected abstract void update(ReferenceArrayList<EntityType<?>> entityTypes);
+
+        @Override
+        public String validate(ServerCommandSource source, ParsedRule<String> currentRule, String newValue, String string) {
+            final String values = newValue.replaceAll("\\s", "");
+            if (values.equals("[]")) {
+                this.update(new ReferenceArrayList<>());
+                return "[]";
+            }
+            final int i = values.length() - 1;
+            if (values.charAt(0) != '[' || values.charAt(i) != ']') {
+                return null;
+            }
+            final ReferenceArrayList<EntityType<?>> entityTypes = new ReferenceArrayList<>();
+            final StringBuilder sb = new StringBuilder("[");
+            boolean first = true;
+            for (final String value : values.substring(1, i).split(",")) {
+                final Identifier identifier = Identifier.tryParse(value);
+                if (identifier == null) {
+                    return null;
+                }
+                final Optional<EntityType<?>> optionalEntityType = Registry.ENTITY_TYPE.getOrEmpty(identifier);
+                if (optionalEntityType.isEmpty()) {
+                    return null;
+                }
+                final EntityType<?> entityType = optionalEntityType.get();
+                if (entityTypes.contains(entityType)) {
+                    continue;
+                }
+                entityTypes.add(entityType);
+                if (first) {
+                    sb.append(identifier);
+                    first = false;
+                } else {
+                    sb.append(',').append(identifier);
+                }
+            }
+            this.update(entityTypes);
+            return sb.append(']').toString();
+        }
+    }
+
+    private static class InterceptUpdatePacketEntitiesValidator extends InterceptPacketEntitiesValidator {
+        @Override
+        protected void update(ReferenceArrayList<EntityType<?>> entityTypes) {
+            interceptUpdatePacketsEntityTypes = entityTypes;
+            for (final ThreadedAnvilChunkStorage chunkStorage : chunkStorages) {
+                for (final ThreadedAnvilChunkStorage.EntityTracker entityTracker : chunkStorage.entityTrackers.values()) {
+                    ((UpdateEntityPacketInterceptor) entityTracker.entry).updateInterceptUpdatePacketsEntityTypes(entityTypes);
+                }
+            }
+        }
+    }
+
+    private static class InterceptAllPacketEntitiesValidator extends InterceptPacketEntitiesValidator {
+        @Override
+        protected void update(ReferenceArrayList<EntityType<?>> entityTypes) {
+            interceptAllPacketsEntityTypes = entityTypes;
+            for (final ThreadedAnvilChunkStorage chunkStorage : chunkStorages) {
+                for (final ThreadedAnvilChunkStorage.EntityTracker entityTracker : chunkStorage.entityTrackers.values()) {
+                    ((AllEntityPacketInterceptor) entityTracker).updateInterceptAllPacketsEntityTypes(entityTypes);
+                    ((AllEntityPacketInterceptor) entityTracker.entry).updateInterceptAllPacketsEntityTypes(entityTypes);
+                }
+            }
         }
     }
 }

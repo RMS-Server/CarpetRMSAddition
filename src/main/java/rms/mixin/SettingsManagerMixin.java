@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import rms.CarpetRMSAddition;
 
 @Mixin(SettingsManager.class)
-public class SettingsManagerMixin {
+public abstract class SettingsManagerMixin {
     @Inject(method = "listAllSettings", at = @At(value = "INVOKE", target = "Lcarpet/settings/SettingsManager;getCategories()Ljava/lang/Iterable;", ordinal = 0), remap = false)
     private void listAllSettings(ServerCommandSource source, CallbackInfoReturnable<Integer> cir) {
         Messenger.m(source, "g " + CarpetRMSAddition.getName() + " " + Translations.tr("ui.version", "version") + ": " + CarpetRMSAddition.getVersion());

@@ -1,0 +1,64 @@
+package rms.mixin;
+
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.server.network.EntityTrackerEntry;
+import net.minecraft.server.world.EntityTrackingListener;
+import net.minecraft.server.world.ThreadedAnvilChunkStorage;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import rms.AllEntityPacketInterceptor;
+import rms.CarpetRMSAdditionSettings;
+
+import java.util.Set;
+
+@Mixin(ThreadedAnvilChunkStorage.EntityTracker.class)
+public abstract class EntityTrackerMixin implements AllEntityPacketInterceptor {
+    @Shadow
+    @Final
+    public EntityTrackerEntry entry;
+    @Shadow
+    @Final
+    private Set<EntityTrackingListener> listeners;
+    @Unique
+    private EntityType<?> type;
+    @Unique
+    private boolean intercept;
+
+    @SuppressWarnings("AddedMixinMembersNamePattern")
+    @Override
+    public void updateInterceptAllPacketsEntityTypes(ReferenceArrayList<EntityType<?>> entityTypes) {
+        final boolean intercept = entityTypes.contains(this.type);
+        if (intercept && !this.intercept) {
+            for (final EntityTrackingListener listener : this.listeners) {
+                this.entry.stopTracking(listener.getPlayer());
+            }
+        } else if (!intercept && this.intercept) {
+            for (final EntityTrackingListener listener : this.listeners) {
+                this.entry.startTracking(listener.getPlayer());
+            }
+        }
+        this.intercept = intercept;
+    }
+
+    @Inject(method = "<init>", at = @At("RETURN"))
+    private void init(ThreadedAnvilChunkStorage threadedAnvilChunkStorage, Entity entity, int maxDistance, int tickInterval, boolean alwaysUpdateVelocity, CallbackInfo ci) {
+        this.type = entity.getType();
+        this.intercept = CarpetRMSAdditionSettings.getInterceptAllPacketsEntityTypes().contains(this.type);
+    }
+
+    @Redirect(method = "updateTrackedStatus(Lnet/minecraft/server/network/ServerPlayerEntity;)V", at = @At(value = "INVOKE", target = "Ljava/util/Set;add(Ljava/lang/Object;)Z"))
+    private <E> boolean add(Set<E> instance, E e) {
+        if (this.intercept) {
+            return false;
+        }
+        return instance.add(e);
+    }
+}

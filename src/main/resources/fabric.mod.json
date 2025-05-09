@@ -22,6 +22,7 @@
 	"mixins": [
 		"carpet-rms-addition.mixins.json"
 	],
+	"accessWidener": "carpet-rms-addition.accesswidener",
 	"depends": {
 		"fabricloader": ">=0.14.25",
 		"minecraft": "~1.17.1",

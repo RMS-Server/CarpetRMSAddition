@@ -17,17 +17,17 @@ public abstract class HostileEntityMixin {
     @Redirect(method = "isSpawnDark", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/ServerWorldAccess;getLightLevel(Lnet/minecraft/world/LightType;Lnet/minecraft/util/math/BlockPos;)I"))
     private static int getLightLevel(ServerWorldAccess instance, LightType lightLayer, BlockPos blockPos) {
         return switch (lightLayer) {
-            case SKY ->
-                    CarpetRMSAdditionSettings.skyLightLevel == -1 ? instance.getLightLevel(LightType.SKY, blockPos) : CarpetRMSAdditionSettings.skyLightLevel;
             case BLOCK ->
-                    CarpetRMSAdditionSettings.blockLightLevel == -1 ? instance.getLightLevel(LightType.BLOCK, blockPos) : CarpetRMSAdditionSettings.blockLightLevel;
+                    CarpetRMSAdditionSettings.isKeepingBlockLightLevel() ? instance.getLightLevel(LightType.BLOCK, blockPos) : CarpetRMSAdditionSettings.getBlockLightLevel();
+            case SKY ->
+                    CarpetRMSAdditionSettings.isKeepingSkyLightLevel() ? instance.getLightLevel(LightType.SKY, blockPos) : CarpetRMSAdditionSettings.getSkyLightLevel();
         };
     }
 
     @Unique
     private static int getLightLevelImpl(WorldView instance, BlockPos blockPos, int i) {
-        final boolean keepBlockLightLevel = CarpetRMSAdditionSettings.blockLightLevel == -1;
-        final boolean keepSkyLightLevel = CarpetRMSAdditionSettings.skyLightLevel == -1;
+        final boolean keepBlockLightLevel = CarpetRMSAdditionSettings.isKeepingBlockLightLevel();
+        final boolean keepSkyLightLevel = CarpetRMSAdditionSettings.isKeepingSkyLightLevel();
         if (keepBlockLightLevel && keepSkyLightLevel) {
             return instance.getLightLevel(blockPos, i);
         }
@@ -35,14 +35,14 @@ public abstract class HostileEntityMixin {
         final int z = blockPos.getZ();
         final boolean isInsideWorld = x > -30000000 && z > -30000000 && x < 30000000 && z < 30000000;
         if (keepBlockLightLevel) {
-            final ChunkLightProvider<?, ?> blockEngine = ((LightingProviderAccessor) instance.getLightingProvider()).getBlockLightProvider();
-            return isInsideWorld ? Math.max(blockEngine == null ? 0 : blockEngine.getLightLevel(blockPos), CarpetRMSAdditionSettings.skyLightLevel - i) : 15;
+            final ChunkLightProvider<?, ?> blockEngine = instance.getLightingProvider().blockLightProvider;
+            return isInsideWorld ? Math.max(blockEngine == null ? 0 : blockEngine.getLightLevel(blockPos), CarpetRMSAdditionSettings.getSkyLightLevel() - i) : 15;
         }
         if (keepSkyLightLevel) {
-            final ChunkLightProvider<?, ?> skyEngine = ((LightingProviderAccessor) instance.getLightingProvider()).getSkyLightProvider();
-            return isInsideWorld ? Math.max(CarpetRMSAdditionSettings.blockLightLevel, skyEngine == null ? 0 : skyEngine.getLightLevel(blockPos) - i) : 15;
+            final ChunkLightProvider<?, ?> skyEngine = instance.getLightingProvider().skyLightProvider;
+            return isInsideWorld ? Math.max(CarpetRMSAdditionSettings.getBlockLightLevel(), skyEngine == null ? 0 : skyEngine.getLightLevel(blockPos) - i) : 15;
         }
-        return isInsideWorld ? Math.max(CarpetRMSAdditionSettings.blockLightLevel, CarpetRMSAdditionSettings.skyLightLevel - i) : 15;
+        return isInsideWorld ? Math.max(CarpetRMSAdditionSettings.getBlockLightLevel(), CarpetRMSAdditionSettings.getSkyLightLevel() - i) : 15;
     }
 
     @Unique
