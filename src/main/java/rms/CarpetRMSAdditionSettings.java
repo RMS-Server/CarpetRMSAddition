@@ -29,12 +29,16 @@ public final class CarpetRMSAdditionSettings {
     @SuppressWarnings("unused")
     @Rule(desc = "A list of entities, in the form of [minecraft:boat,minecraft:creeper], for each the server will not send all packets and immediately remove from client. This takes precedence over interceptUpdatePacketEntities", category = {RMS}, validate = InterceptAllPacketEntitiesValidator.class)
     public static String interceptAllPacketEntities = "[]";
+    @SuppressWarnings("unused")
+    @Rule(desc = "A list of entities, in the form of [minecraft:cat,minecraft:creeper], for each the server will not naturally spawn", category = {RMS}, validate = NaturalSpawnBlacklistValidator.class)
+    public static String naturalSpawnBlacklist = "[]";
     private static int blockLightLevel = -1;
     private static int skyLightLevel = -1;
     private static boolean keepBlockLightLevel = true;
     private static boolean keepSkyLightLevel = true;
     private static ReferenceArrayList<EntityType<?>> interceptUpdatePacketsEntityTypes = new ReferenceArrayList<>();
     private static ReferenceArrayList<EntityType<?>> interceptAllPacketsEntityTypes = new ReferenceArrayList<>();
+    private static ReferenceArrayList<EntityType<?>> naturalSpawnBlacklistEntityTypes = new ReferenceArrayList<>();
 
     public static int getBlockLightLevel() {
         return blockLightLevel;
@@ -62,6 +66,10 @@ public final class CarpetRMSAdditionSettings {
 
     public static ReferenceArrayList<EntityType<?>> getInterceptAllPacketsEntityTypes() {
         return interceptAllPacketsEntityTypes;
+    }
+
+    public static ReferenceArrayList<EntityType<?>> getNaturalSpawnBlacklistEntityTypes() {
+        return naturalSpawnBlacklistEntityTypes;
     }
 
     private static int parseLightLevel(final String lightLevel) {
@@ -104,7 +112,7 @@ public final class CarpetRMSAdditionSettings {
         }
     }
 
-    private abstract static class InterceptPacketEntitiesValidator extends Validator<String> {
+    private abstract static class EntityListValidator extends Validator<String> {
         protected abstract void update(ReferenceArrayList<EntityType<?>> entityTypes);
 
         @Override
@@ -147,7 +155,7 @@ public final class CarpetRMSAdditionSettings {
         }
     }
 
-    private static class InterceptUpdatePacketEntitiesValidator extends InterceptPacketEntitiesValidator {
+    private static class InterceptUpdatePacketEntitiesValidator extends EntityListValidator {
         @Override
         protected void update(ReferenceArrayList<EntityType<?>> entityTypes) {
             interceptUpdatePacketsEntityTypes = entityTypes;
@@ -159,7 +167,7 @@ public final class CarpetRMSAdditionSettings {
         }
     }
 
-    private static class InterceptAllPacketEntitiesValidator extends InterceptPacketEntitiesValidator {
+    private static class InterceptAllPacketEntitiesValidator extends EntityListValidator {
         @Override
         protected void update(ReferenceArrayList<EntityType<?>> entityTypes) {
             interceptAllPacketsEntityTypes = entityTypes;
@@ -169,6 +177,13 @@ public final class CarpetRMSAdditionSettings {
                     ((AllEntityPacketInterceptor) entityTracker.entry).updateInterceptAllPacketsEntityTypes(entityTypes);
                 }
             }
+        }
+    }
+
+    private static class NaturalSpawnBlacklistValidator extends EntityListValidator {
+        @Override
+        protected void update(ReferenceArrayList<EntityType<?>> entityTypes) {
+            naturalSpawnBlacklistEntityTypes = entityTypes;
         }
     }
 }

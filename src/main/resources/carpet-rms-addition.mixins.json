@@ -8,7 +8,13 @@
 		"EntityTrackerMixin",
 		"HostileEntityMixin",
 		"SettingsManagerMixin",
-		"ThreadedAnvilChunkStorageMixin"
+		"SpawnRestrictionMixin",
+		"ThreadedAnvilChunkStorageMixin",
+		"spawners.CatSpawnerMixin",
+		"spawners.PhantomSpawnerMixin",
+		"spawners.PillagerSpawnerMixin",
+		"spawners.WanderingTraderManagerMixin",
+		"spawners.ZombieSiegeManagerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
