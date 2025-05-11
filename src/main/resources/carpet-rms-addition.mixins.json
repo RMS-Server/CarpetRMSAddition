@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "rms.mixin",
+	"package": "rms.carpet_rms_addition.mixin",
 	"compatibilityLevel": "JAVA_16",
 	"mixins": [
 		"EntityDataObjectMixin",

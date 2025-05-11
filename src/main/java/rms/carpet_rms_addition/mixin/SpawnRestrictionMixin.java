@@ -1,4 +1,4 @@
-package rms.mixin;
+package rms.carpet_rms_addition.mixin;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import rms.CarpetRMSAdditionSettings;
+import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
 
 import java.util.Random;
 

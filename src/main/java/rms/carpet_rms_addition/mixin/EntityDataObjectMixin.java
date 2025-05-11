@@ -1,4 +1,4 @@
-package rms.mixin;
+package rms.carpet_rms_addition.mixin;
 
 import net.minecraft.command.EntityDataObject;
 import net.minecraft.entity.Entity;
@@ -8,7 +8,7 @@ import net.minecraft.predicate.NbtPredicate;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import rms.CarpetRMSAdditionSettings;
+import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
 
 @Mixin(EntityDataObject.class)
 public abstract class EntityDataObjectMixin {

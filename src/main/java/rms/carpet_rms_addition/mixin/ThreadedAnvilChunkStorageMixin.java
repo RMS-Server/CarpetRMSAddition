@@ -1,4 +1,4 @@
-package rms.mixin;
+package rms.carpet_rms_addition.mixin;
 
 import com.mojang.datafixers.DataFixer;
 import net.minecraft.server.WorldGenerationProgressListener;
@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import rms.CarpetRMSAdditionSettings;
+import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
 
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;

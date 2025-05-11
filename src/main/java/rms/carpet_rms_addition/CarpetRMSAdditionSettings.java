@@ -1,4 +1,4 @@
-package rms;
+package rms.carpet_rms_addition;
 
 import carpet.settings.ParsedRule;
 import carpet.settings.Rule;

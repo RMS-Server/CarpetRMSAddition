@@ -8,15 +8,15 @@
 		"Jog Ming"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/Jog-Ming/CarpetRMSAddition"
+		"homepage": "https://github.com/RMS-Server/CarpetRMSAddition",
+		"sources": "https://github.com/RMS-Server/CarpetRMSAddition"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/carpet-rms-addition/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"rms.CarpetRMSAddition"
+			"rms.carpet_rms_addition.CarpetRMSAddition"
 		]
 	},
 	"mixins": [

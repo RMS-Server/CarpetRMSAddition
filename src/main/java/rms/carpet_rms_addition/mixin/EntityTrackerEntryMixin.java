@@ -1,4 +1,4 @@
-package rms.mixin;
+package rms.carpet_rms_addition.mixin;
 
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.minecraft.entity.Entity;
@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import rms.AllEntityPacketInterceptor;
-import rms.CarpetRMSAdditionSettings;
-import rms.UpdateEntityPacketInterceptor;
+import rms.carpet_rms_addition.AllEntityPacketInterceptor;
+import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
+import rms.carpet_rms_addition.UpdateEntityPacketInterceptor;
 
 import java.util.function.Consumer;
 

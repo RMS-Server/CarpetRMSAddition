@@ -1,4 +1,4 @@
-package rms.mixin;
+package rms.carpet_rms_addition.mixin;
 
 import carpet.settings.SettingsManager;
 import carpet.utils.Messenger;
@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import rms.CarpetRMSAddition;
+import rms.carpet_rms_addition.CarpetRMSAddition;
 
 @Mixin(SettingsManager.class)
 public abstract class SettingsManagerMixin {

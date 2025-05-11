@@ -1,4 +1,4 @@
-package rms.mixin.spawners;
+package rms.carpet_rms_addition.mixin.spawners;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.server.world.ServerWorld;
@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import rms.CarpetRMSAdditionSettings;
+import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
 
 @Mixin(CatSpawner.class)
 public abstract class CatSpawnerMixin {

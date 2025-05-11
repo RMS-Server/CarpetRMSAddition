@@ -1,4 +1,4 @@
-package rms.mixin;
+package rms.carpet_rms_addition.mixin;
 
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import rms.CarpetRMSAdditionSettings;
+import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
 
 @Mixin(HostileEntity.class)
 public abstract class HostileEntityMixin {
