@@ -11,12 +11,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
 
-import java.util.Random;
-
 @Mixin(SpawnRestriction.class)
 public abstract class SpawnRestrictionMixin {
     @Inject(method = "canSpawn", at = @At("HEAD"), cancellable = true)
-    private static void canSpawn(EntityType<?> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir) {
+    private static void canSpawn(EntityType<?> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos,
+                                 //#if MC < 12104
+                                 java.util.Random random,
+                                 //#else
+                                 //$$ net.minecraft.util.math.random.Random random,
+                                 //#endif
+                                 CallbackInfoReturnable<Boolean> cir) {
         if (CarpetRMSAdditionSettings.getNaturalSpawnBlacklistEntityTypes().contains(type)) {
             cir.setReturnValue(false);
         }

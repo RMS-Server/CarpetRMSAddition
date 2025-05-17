@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "carpet-rms-addition",
-	"version": "${version}",
+	"version": "$version",
 	"name": "Carpet RMS Addition",
 	"description": "Carpet extension mod developed by RMS.",
 	"authors": [
@@ -24,8 +24,8 @@
 	],
 	"accessWidener": "carpet-rms-addition.accesswidener",
 	"depends": {
-		"fabricloader": ">=0.14.25",
-		"minecraft": "~1.17.1",
-		"java": ">=16"
+		"fabricloader": ">=$loader_version",
+		"carpet": ">=$carpet_version",
+		"minecraft": "$minecraft_version"
 	}
 }

@@ -8,10 +8,17 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ThreadedAnvilChunkStorage;
 import net.minecraft.util.Identifier;
+//#if MC < 12104
 import net.minecraft.util.registry.Registry;
+//#else
+//$$ import net.minecraft.registry.Registries;
+//#endif
 
 import java.util.Optional;
 
+//#if MC >= 12104
+//$$ @SuppressWarnings("removal")
+//#endif
 public final class CarpetRMSAdditionSettings {
     private static final String RMS = "RMS";
     private static final ReferenceArrayList<ThreadedAnvilChunkStorage> chunkStorages = new ReferenceArrayList<>();
@@ -134,7 +141,11 @@ public final class CarpetRMSAdditionSettings {
                 if (identifier == null) {
                     return null;
                 }
+                //#if MC < 12104
                 final Optional<EntityType<?>> optionalEntityType = Registry.ENTITY_TYPE.getOrEmpty(identifier);
+                //#else
+                //$$ final Optional<EntityType<?>> optionalEntityType = Registries.ENTITY_TYPE.getOptionalValue(identifier);
+                //#endif
                 if (optionalEntityType.isEmpty()) {
                     return null;
                 }

@@ -16,7 +16,15 @@ public abstract class EntityDataObjectMixin {
     private NbtCompound entityToNbt(Entity entity) {
         final NbtCompound nbtCompound = NbtPredicate.entityToNbt(entity);
         if (CarpetRMSAdditionSettings.enhancedDataGet) {
+            //#if MC < 12104
             nbtCompound.putBoolean("inNetherPortal", entity.inNetherPortal);
+            //#else
+            //$$ if (entity.portalManager == null) {
+            //$$     nbtCompound.putBoolean("inNetherPortal", false);
+            //$$ } else {
+            //$$     nbtCompound.putBoolean("inNetherPortal", entity.portalManager.isInPortal());
+            //$$ }
+            //#endif
             if (entity instanceof BoatEntity boatEntity) {
                 nbtCompound.putFloat("ticksUnderwater", boatEntity.ticksUnderwater);
             }
