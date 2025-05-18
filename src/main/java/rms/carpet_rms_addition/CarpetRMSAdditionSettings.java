@@ -8,12 +8,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ThreadedAnvilChunkStorage;
 import net.minecraft.util.Identifier;
-//#if MC < 12104
-import net.minecraft.util.registry.Registry;
-//#else
-//$$ import net.minecraft.registry.Registries;
-//#endif
+import net.minecraft.world.gen.Spawner;
 
+import java.util.List;
 import java.util.Optional;
 
 //#if MC >= 12104
@@ -22,6 +19,7 @@ import java.util.Optional;
 public final class CarpetRMSAdditionSettings {
     private static final String RMS = "RMS";
     private static final ReferenceArrayList<ThreadedAnvilChunkStorage> chunkStorages = new ReferenceArrayList<>();
+    private static final ReferenceArrayList<Spawner> spawners = new ReferenceArrayList<>();
     @SuppressWarnings("unused")
     @Rule(desc = "Override the block light level when spawning monsters", category = {RMS}, options = {"false", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"}, validate = OverrideBlockLightLevelValidator.class)
     public static String overrideMonsterBlockLightLevel = "false";
@@ -37,8 +35,11 @@ public final class CarpetRMSAdditionSettings {
     @Rule(desc = "A list of entities, in the form of [minecraft:boat,minecraft:creeper], for each the server will not send all packets and immediately remove from client. This takes precedence over interceptUpdatePacketEntities", category = {RMS}, validate = InterceptAllPacketEntitiesValidator.class)
     public static String interceptAllPacketEntities = "[]";
     @SuppressWarnings("unused")
-    @Rule(desc = "A list of entities, in the form of [minecraft:cat,minecraft:creeper], for each the server will not naturally spawn", category = {RMS}, validate = NaturalSpawnBlacklistValidator.class)
+    @Rule(desc = "A list of entities, in the form of [minecraft:cat,minecraft:creeper], that will not naturally spawn", category = {RMS}, validate = NaturalSpawnBlacklistValidator.class)
     public static String naturalSpawnBlacklist = "[]";
+    @SuppressWarnings("unused")
+    @Rule(desc = "A list of entities, in the form of [minecraft:boat,minecraft:creeper], that will not go through portals", category = {RMS}, validate = UsePortalBlacklistValidator.class)
+    public static String usePortalBlacklist = "[]";
     private static int blockLightLevel = -1;
     private static int skyLightLevel = -1;
     private static boolean keepBlockLightLevel = true;
@@ -46,6 +47,7 @@ public final class CarpetRMSAdditionSettings {
     private static ReferenceArrayList<EntityType<?>> interceptUpdatePacketsEntityTypes = new ReferenceArrayList<>();
     private static ReferenceArrayList<EntityType<?>> interceptAllPacketsEntityTypes = new ReferenceArrayList<>();
     private static ReferenceArrayList<EntityType<?>> naturalSpawnBlacklistEntityTypes = new ReferenceArrayList<>();
+    private static ReferenceArrayList<EntityType<?>> usePortalBlacklistEntityTypes = new ReferenceArrayList<>();
 
     public static int getBlockLightLevel() {
         return blockLightLevel;
@@ -67,6 +69,10 @@ public final class CarpetRMSAdditionSettings {
         chunkStorages.add(chunkStorage);
     }
 
+    public static void registerSpawners(List<Spawner> spawners) {
+        CarpetRMSAdditionSettings.spawners.addAll(spawners);
+    }
+
     public static ReferenceArrayList<EntityType<?>> getInterceptUpdatePacketsEntityTypes() {
         return interceptUpdatePacketsEntityTypes;
     }
@@ -77,6 +83,10 @@ public final class CarpetRMSAdditionSettings {
 
     public static ReferenceArrayList<EntityType<?>> getNaturalSpawnBlacklistEntityTypes() {
         return naturalSpawnBlacklistEntityTypes;
+    }
+
+    public static ReferenceArrayList<EntityType<?>> getUsePortalBlacklistEntityTypes() {
+        return usePortalBlacklistEntityTypes;
     }
 
     private static int parseLightLevel(final String lightLevel) {
@@ -142,9 +152,9 @@ public final class CarpetRMSAdditionSettings {
                     return null;
                 }
                 //#if MC < 12104
-                final Optional<EntityType<?>> optionalEntityType = Registry.ENTITY_TYPE.getOrEmpty(identifier);
+                final Optional<EntityType<?>> optionalEntityType = net.minecraft.util.registry.Registry.ENTITY_TYPE.getOrEmpty(identifier);
                 //#else
-                //$$ final Optional<EntityType<?>> optionalEntityType = Registries.ENTITY_TYPE.getOptionalValue(identifier);
+                //$$ final Optional<EntityType<?>> optionalEntityType = net.minecraft.registry.Registries.ENTITY_TYPE.getOptionalValue(identifier);
                 //#endif
                 if (optionalEntityType.isEmpty()) {
                     return null;
@@ -195,6 +205,21 @@ public final class CarpetRMSAdditionSettings {
         @Override
         protected void update(ReferenceArrayList<EntityType<?>> entityTypes) {
             naturalSpawnBlacklistEntityTypes = entityTypes;
+            for (final Spawner spawner : spawners) {
+                ((NaturalSpawnBlacklistEnforcer) spawner).updateNaturalSpawnBlacklist(entityTypes);
+            }
+        }
+    }
+
+    private static class UsePortalBlacklistValidator extends EntityListValidator {
+        @Override
+        protected void update(ReferenceArrayList<EntityType<?>> entityTypes) {
+            usePortalBlacklistEntityTypes = entityTypes;
+            for (final ThreadedAnvilChunkStorage chunkStorage : chunkStorages) {
+                for (final ThreadedAnvilChunkStorage.EntityTracker entityTracker : chunkStorage.entityTrackers.values()) {
+                    ((UsePortalBlacklistEnforcer) entityTracker).updateUsePortalBlacklist(entityTypes);
+                }
+            }
         }
     }
 }

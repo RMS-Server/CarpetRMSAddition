@@ -16,14 +16,18 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import rms.carpet_rms_addition.AllEntityPacketInterceptor;
 import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
+import rms.carpet_rms_addition.UsePortalBlacklistEnforcer;
 
 import java.util.Set;
 
 @Mixin(ThreadedAnvilChunkStorage.EntityTracker.class)
-public abstract class EntityTrackerMixin implements AllEntityPacketInterceptor {
+public abstract class EntityTrackerMixin implements AllEntityPacketInterceptor, UsePortalBlacklistEnforcer {
     @Shadow
     @Final
     public EntityTrackerEntry entry;
+    @Shadow
+    @Final
+    Entity entity;
     @Shadow
     @Final
     private Set<EntityTrackingListener> listeners;
@@ -46,6 +50,12 @@ public abstract class EntityTrackerMixin implements AllEntityPacketInterceptor {
             }
         }
         this.intercept = intercept;
+    }
+
+    @SuppressWarnings("AddedMixinMembersNamePattern")
+    @Override
+    public void updateUsePortalBlacklist(ReferenceArrayList<EntityType<?>> entityTypes) {
+        ((UsePortalBlacklistEnforcer) this.entity).updateUsePortalBlacklist(entityTypes);
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
