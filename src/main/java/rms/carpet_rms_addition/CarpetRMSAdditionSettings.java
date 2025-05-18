@@ -40,6 +40,8 @@ public final class CarpetRMSAdditionSettings {
     @SuppressWarnings("unused")
     @Rule(desc = "A list of entities, in the form of [minecraft:boat,minecraft:creeper], that will not go through portals", category = {RMS}, validate = UsePortalBlacklistValidator.class)
     public static String usePortalBlacklist = "[]";
+    @Rule(desc = "Stops all particle packets from being sent", category = {RMS})
+    public static boolean interceptParticlePackets = false;
     private static int blockLightLevel = -1;
     private static int skyLightLevel = -1;
     private static boolean keepBlockLightLevel = true;

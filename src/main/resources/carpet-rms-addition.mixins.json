@@ -8,6 +8,7 @@
 		"EntityTrackerEntryMixin",
 		"EntityTrackerMixin",
 		"HostileEntityMixin",
+		"ServerPlayNetworkHandlerMixin",
 		"ServerWorldMixin",
 		"SettingsManagerMixin",
 		"SlimeEntityMixin",
