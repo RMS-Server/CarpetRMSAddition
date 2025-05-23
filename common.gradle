@@ -1,6 +1,8 @@
-apply plugin: 'maven-publish'
 apply plugin: 'fabric-loom'
 apply plugin: 'com.replaymod.preprocess'
+base {
+    archivesName = "$id-$name"
+}
 repositories {
     maven {
         url = 'https://masa.dy.fi/maven'
@@ -39,15 +41,5 @@ java {
     targetCompatibility = javaCompatibility
 }
 jar {
-    from('LICENSE') {
-        rename { "${it}_$id" }
-    }
-}
-publishing {
-    publications {
-        create('mavenJava', MavenPublication) {
-            artifactId = id
-            from components.java
-        }
-    }
+    from '../../LICENSE'
 }

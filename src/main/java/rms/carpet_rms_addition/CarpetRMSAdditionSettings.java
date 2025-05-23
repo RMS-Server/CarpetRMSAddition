@@ -42,6 +42,10 @@ public final class CarpetRMSAdditionSettings {
     public static String usePortalBlacklist = "[]";
     @Rule(desc = "Stops all particle packets from being sent", category = {RMS})
     public static boolean interceptParticlePackets = false;
+    //#if MC < 12104
+    @Rule(desc = "Remove 16-character length limits for scoreboards", category = {RMS})
+    public static boolean removeScoreboardLengthLimits = false;
+    //#endif
     private static int blockLightLevel = -1;
     private static int skyLightLevel = -1;
     private static boolean keepBlockLightLevel = true;
