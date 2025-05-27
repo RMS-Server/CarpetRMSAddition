@@ -1,7 +1,6 @@
 import com.replaymod.gradle.preprocess.Node
 
 plugins {
-    id 'maven-publish'
     id 'fabric-loom' version '1.10-SNAPSHOT' apply false
     id 'com.replaymod.preprocess' version '9d21b334a7'
 }
