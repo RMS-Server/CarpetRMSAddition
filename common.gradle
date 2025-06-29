@@ -1,5 +1,8 @@
 apply plugin: 'fabric-loom'
 apply plugin: 'com.replaymod.preprocess'
+base {
+    archivesName = "$id-$name"
+}
 repositories {
     maven {
         url = 'https://masa.dy.fi/maven'
@@ -7,12 +10,9 @@ repositories {
 }
 dependencies {
     minecraft "com.mojang:minecraft:$name"
-    mappings "net.fabricmc:yarn:$yarn_mappings:v2"
+    mappings "net.fabricmc:yarn:$name+build.$yarn_mappings:v2"
     modImplementation "net.fabricmc:fabric-loader:$loader_version"
     modImplementation "carpet:fabric-carpet:$name-$carpet_core_version"
-}
-base {
-    archivesName = "$id-$name"
 }
 loom {
     accessWidenerPath = file "${id}.accesswidener"
@@ -30,7 +30,7 @@ if (mcVersion < 11700) {
 processResources {
     from "${id}.accesswidener"
     filesMatching('fabric.mod.json') {
-        expand version: version, minecraft_version: project.name, carpet_version: carpet_core_version.replaceAll(/^(\d+\.\d+\.\d+).*$/, '$1'), loader_version: loader_version
+        expand id: id, version: version, minecraft_version: project.name, carpet_version: carpet_core_version.replaceAll(/^(\d+\.\d+\.\d+).*$/, '$1'), loader_version: loader_version
     }
     filesMatching("${id}.mixins.json") {
         expand java_version: javaCompatibility.ordinal() + 1
