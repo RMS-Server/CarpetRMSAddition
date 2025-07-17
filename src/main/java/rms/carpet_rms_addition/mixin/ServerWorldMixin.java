@@ -21,17 +21,16 @@ import java.util.concurrent.Executor;
 public abstract class ServerWorldMixin {
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<World> worldKey,
-                      //#if MC < 12104
+                      //#if MC < 12001
                       net.minecraft.world.dimension.DimensionType dimensionType,
+                      WorldGenerationProgressListener worldGenerationProgressListener,
+                      net.minecraft.world.gen.chunk.ChunkGenerator chunkGenerator,
                       //#else
                       //$$ net.minecraft.world.dimension.DimensionOptions dimensionOptions,
-                      //#endif
-                      WorldGenerationProgressListener worldGenerationProgressListener,
-                      //#if MC < 12104
-                      net.minecraft.world.gen.chunk.ChunkGenerator chunkGenerator,
+                      //$$ WorldGenerationProgressListener worldGenerationProgressListener,
                       //#endif
                       boolean debugWorld, long seed, List<Spawner> spawners, boolean shouldTickTime,
-                      //#if MC >= 12104
+                      //#if MC >= 12001
                       //$$ net.minecraft.util.math.random.RandomSequencesState randomSequencesState,
                       //#endif
                       CallbackInfo ci) {

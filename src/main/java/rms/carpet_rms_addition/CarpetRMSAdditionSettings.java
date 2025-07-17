@@ -153,8 +153,10 @@ public final class CarpetRMSAdditionSettings {
                 if (identifier == null) {
                     return null;
                 }
-                //#if MC < 12104
+                //#if MC < 12001
                 final Optional<EntityType<?>> optionalEntityType = net.minecraft.util.registry.Registry.ENTITY_TYPE.getOrEmpty(identifier);
+                //#elseif MC < 12104
+                //$$ final Optional<EntityType<?>> optionalEntityType = net.minecraft.registry.Registries.ENTITY_TYPE.getOrEmpty(identifier);
                 //#else
                 //$$ final Optional<EntityType<?>> optionalEntityType = net.minecraft.registry.Registries.ENTITY_TYPE.getOptionalValue(identifier);
                 //#endif

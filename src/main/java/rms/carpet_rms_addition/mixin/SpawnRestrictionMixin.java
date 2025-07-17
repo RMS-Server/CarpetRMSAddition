@@ -15,7 +15,7 @@ import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
 public abstract class SpawnRestrictionMixin {
     @Inject(method = "canSpawn", at = @At("HEAD"), cancellable = true)
     private static void canSpawn(EntityType<?> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos,
-                                 //#if MC < 12104
+                                 //#if MC < 12001
                                  java.util.Random random,
                                  //#else
                                  //$$ net.minecraft.util.math.random.Random random,
