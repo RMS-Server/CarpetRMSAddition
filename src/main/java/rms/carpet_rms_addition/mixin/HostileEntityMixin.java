@@ -33,17 +33,11 @@ public abstract class HostileEntityMixin {
         return LightLevelGetter.get(instance, blockPos);
     }
 
-    //#if MC < 11701
+    //#if MC < 12001
     @Redirect(method = "getPathfindingFavor", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldView;getBrightness(Lnet/minecraft/util/math/BlockPos;)F"))
     private float getBrightness(WorldView instance, BlockPos pos) {
         return instance.getDimension().getBrightness(LightLevelGetter.get(instance, pos));
     }
-    //#elseif MC < 12001
-    //$$ @Redirect(method = "getPathfindingFavor", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldView;getBrightness(Lnet/minecraft/util/math/BlockPos;)F"))
-    //$$ private float getBrightness(WorldView instance, BlockPos pos) {
-    //$$     return LightLevelGetter.get(instance, pos) / 15.0F;
-    //$$ }
-    //#elseif MC < 12104
     //#else
     //$$ @Redirect(method = "getPathfindingFavor", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldView;getPhototaxisFavor(Lnet/minecraft/util/math/BlockPos;)F"))
     //$$ private float getPhototaxisFavor(WorldView instance, BlockPos blockPos) {

@@ -4,7 +4,9 @@
 # against bad commits.
 
 name: build
-on: [pull_request, push]
+on: 
+  pull_request:
+  push:
 
 jobs:
   build:
@@ -28,3 +30,50 @@ jobs:
         with:
           name: Artifacts
           path: versions/*/build/libs/
+      
+      # Release creation only on push to master
+      - name: extract version from gradle.properties
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        id: get_version
+        run: |
+          VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version extracted: $VERSION"
+      
+      - name: delete existing release and tag if exists
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          echo "Checking for existing release with tag: v$VERSION"
+          
+          # Delete release if exists
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "Deleting existing release v$VERSION"
+            gh release delete "v$VERSION" --yes
+          else
+            echo "No existing release found for v$VERSION"
+          fi
+          
+          # Delete tag if exists
+          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+            echo "Deleting existing tag v$VERSION"
+            git push --delete origin "v$VERSION" || true
+          else
+            echo "No existing tag found for v$VERSION"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: create release
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          echo "Creating release for version: v$VERSION"
+          
+          # Create tag and release
+          gh release create "v$VERSION" \
+            --title "Release v$VERSION" \
+            --notes "Automated release for version $VERSION" \
+            versions/*/build/libs/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
