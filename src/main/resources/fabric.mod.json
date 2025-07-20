@@ -5,7 +5,9 @@
 	"name": "Carpet RMS Addition",
 	"description": "Carpet extension mod developed by RMS.",
 	"authors": [
-		"Jog Ming"
+		"Jog Ming",
+		"XRain",
+		"VY"
 	],
 	"contact": {
 		"homepage": "https://github.com/RMS-Server/CarpetRMSAddition",
