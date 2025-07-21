@@ -25,7 +25,7 @@
 * 默认值：`[]`
 * 示例用法：`[boat,minecraft:creeper]`
 ### naturalSpawnBlacklist
-黑名单上的实体不会自然生成。
+黑名单上的实体将不会自然生成。
 * 默认值：`[]`
 * 示例用法：`[cat,minecraft:creeper]`
 ### overrideMonsterBlockLightLevel
