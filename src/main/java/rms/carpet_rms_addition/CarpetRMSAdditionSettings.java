@@ -13,7 +13,7 @@ import net.minecraft.world.gen.Spawner;
 import java.util.List;
 import java.util.Optional;
 
-//#if MC >= 12104
+//#if MC >= 12001
 //$$ @SuppressWarnings("removal")
 //#endif
 public final class CarpetRMSAdditionSettings {
