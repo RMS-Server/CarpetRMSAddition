@@ -1,0 +1,99 @@
+# Build and create release with artifacts
+# Can be triggered manually or when a release is published
+
+name: release
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+      - name: setup jdk
+        uses: actions/setup-java@v4
+        with:
+          java-version: '22'
+          distribution: 'temurin'
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: build
+        run: ./gradlew build
+      
+      # For manual trigger: extract version and create release
+      - name: extract version from gradle.properties
+        if: github.event_name == 'workflow_dispatch'
+        id: get_version
+        run: |
+          VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version extracted: $VERSION"
+      
+      - name: generate changelog from latest commit
+        if: github.event_name == 'workflow_dispatch'
+        id: changelog
+        run: |
+          # Get the latest commit message
+          CHANGELOG=$(git log -1 --pretty=format:"%s")
+          
+          if [ -z "$CHANGELOG" ]; then
+            CHANGELOG="Initial release"
+          fi
+          
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: delete existing release and tag if exists
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          echo "Checking for existing release with tag: v$VERSION"
+          
+          # Delete release if exists
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "Deleting existing release v$VERSION"
+            gh release delete "v$VERSION" --yes
+          else
+            echo "No existing release found for v$VERSION"
+          fi
+          
+          # Delete tag if exists
+          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+            echo "Deleting existing tag v$VERSION"
+            git push --delete origin "v$VERSION" || true
+          else
+            echo "No existing tag found for v$VERSION"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: create release with changelog
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          echo "Creating release for version: v$VERSION"
+          
+          # Create tag and release with changelog
+          gh release create "v$VERSION" \
+            --title "Release v$VERSION" \
+            --notes "${{ steps.changelog.outputs.changelog }}" \
+            versions/*/build/libs/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      # For published release: just upload assets
+      - name: upload release assets
+        if: github.event_name == 'release'
+        run: |
+          # Upload all jar files to the release
+          gh release upload ${{ github.event.release.tag_name }} versions/*/build/libs/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
