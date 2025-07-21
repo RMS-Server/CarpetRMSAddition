@@ -1,27 +1,29 @@
 {
-	"required": true,
-	"package": "rms.carpet_rms_addition.mixin",
-	"compatibilityLevel": "JAVA_$java_version",
-	"mixins": [
-		"EntityDataObjectMixin",
-		"EntityMixin",
-		"EntityTrackerEntryMixin",
-		"EntityTrackerMixin",
-		"HostileEntityMixin",
-		"ServerPlayNetworkHandlerMixin",
-		"ServerWorldMixin",
-		"SettingsManagerMixin",
-		"SlimeEntityMixin",
-		"SpawnRestrictionMixin",
-		"ThreadedAnvilChunkStorageMixin",
-		"ThrownEntityMixin",
-		"spawners.CatSpawnerMixin",
-		"spawners.PhantomSpawnerMixin",
-		"spawners.PillagerSpawnerMixin",
-		"spawners.WanderingTraderManagerMixin",
-		"spawners.ZombieSiegeManagerMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	}
+  "required": true,
+  "package": "rms.carpet_rms_addition.mixin",
+  "compatibilityLevel": "JAVA_$java_version",
+  "mixins": [
+    "EntityDataObjectMixin",
+    "EntityMixin",
+    "EntityTrackerEntryMixin",
+    "EntityTrackerMixin",
+    "FallingBlockEntityMixin",
+    "FallingBlockMixin",
+    "HostileEntityMixin",
+    "ServerPlayNetworkHandlerMixin",
+    "ServerWorldMixin",
+    "SettingsManagerMixin",
+    "SlimeEntityMixin",
+    "SpawnRestrictionMixin",
+    "ThreadedAnvilChunkStorageMixin",
+    "ThrownEntityMixin",
+    "spawners.CatSpawnerMixin",
+    "spawners.PhantomSpawnerMixin",
+    "spawners.PillagerSpawnerMixin",
+    "spawners.WanderingTraderManagerMixin",
+    "spawners.ZombieSiegeManagerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }
