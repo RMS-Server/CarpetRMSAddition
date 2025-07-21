@@ -15,7 +15,7 @@
 ### interceptAllPacketEntities
 拦截列表中实体发送的所有包。这将会覆盖 `interceptUpdatePacketEntities`。在带宽受限时或许有用。
 * 默认值：`[]`
-* Example usage: `[boat,minecraft:creeper]`
+* 示例用法：`[boat,minecraft:creeper]`
 ### interceptParticlePackets
 拦截所有的粒子包。在带宽受限时或许有用。
 * 默认值：`false`
@@ -23,11 +23,11 @@
 ### interceptUpdatePacketEntities
 拦截列表中实体发送的更新包（移动包和旋转包）。需注意的是，大多数非生物实体（例如矿车，TNT）也会在客户端被计算，所以启用此规则可能会导致客户端显示错误。在带宽受限时或许有用。
 * 默认值：`[]`
-* Example usage: `[boat,minecraft:creeper]`
+* 示例用法：`[boat,minecraft:creeper]`
 ### naturalSpawnBlacklist
-黑名单上的实体不会自然生成。
+黑名单上的实体将不会自然生成。
 * 默认值：`[]`
-* Example usage: `[cat,minecraft:creeper]`
+* 示例用法：`[cat,minecraft:creeper]`
 ### overrideMonsterBlockLightLevel
 覆写传递给怪物生成逻辑的方块光照亮度。在设计光照抑制农场时或许有用。
 * 默认值：`false`
