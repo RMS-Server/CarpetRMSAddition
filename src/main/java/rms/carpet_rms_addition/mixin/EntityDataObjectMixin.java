@@ -16,7 +16,7 @@ public abstract class EntityDataObjectMixin {
     private NbtCompound entityToNbt(Entity entity) {
         final NbtCompound nbtCompound = NbtPredicate.entityToNbt(entity);
         if (CarpetRMSAdditionSettings.enhancedDataGet) {
-            //#if MC < 12104
+            //#if MC < 12101
             nbtCompound.putBoolean("inNetherPortal", entity.inNetherPortal);
             //#else
             //$$ if (entity.portalManager == null) {
