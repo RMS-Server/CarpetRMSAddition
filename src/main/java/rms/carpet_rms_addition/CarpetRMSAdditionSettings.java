@@ -42,6 +42,10 @@ public final class CarpetRMSAdditionSettings {
     public static String usePortalBlacklist = "[]";
     @Rule(desc = "Stops all particle packets from being sent", category = {RMS})
     public static boolean interceptParticlePackets = false;
+    //#if MC < 11802
+    @Rule(desc = "Port the behavior of falling blocks from 1.18.2+", category = {RMS})
+    public static boolean fallingBlockBackport = false;
+    //#endif
     private static int blockLightLevel = -1;
     private static int skyLightLevel = -1;
     private static boolean keepBlockLightLevel = true;
