@@ -27,6 +27,27 @@ jobs:
           distribution: 'temurin'
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
+      
+      # Extract version info for publishing
+      - name: extract version info
+        id: version_info
+        run: |
+          # Get mod version from root gradle.properties
+          MOD_VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2)
+          MOD_ID=$(grep '^id=' gradle.properties | cut -d'=' -f2)
+          
+          echo "mod_version=$MOD_VERSION" >> $GITHUB_OUTPUT
+          echo "mod_id=$MOD_ID" >> $GITHUB_OUTPUT
+          echo "mod_name=Carpet RMS Addition" >> $GITHUB_OUTPUT
+          
+          # Get all supported minecraft versions
+          GAME_VERSIONS=$(find versions -name "gradle.properties" -exec grep -l "carpet_minecraft_version" {} \; | xargs -I {} grep "carpet_minecraft_version" {} | cut -d'=' -f2 | sort -u | tr '\n' ',' | sed 's/,$//')
+          echo "game_versions=$GAME_VERSIONS" >> $GITHUB_OUTPUT
+          
+          echo "Mod Version: $MOD_VERSION"
+          echo "Mod ID: $MOD_ID" 
+          echo "Game Versions: $GAME_VERSIONS"
+      
       - name: build
         run: ./gradlew build
       
@@ -100,3 +121,25 @@ jobs:
           gh release upload ${{ github.event.release.tag_name }} versions/*/build/libs/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      # Publish to Modrinth
+      - name: publish to modrinth
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-id: ${{ vars.MODRINTH_ID }}
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          files: |
+            versions/*/build/libs/*.jar
+
+          name: ${{ format('{0} v{1}', 
+                 steps.version_info.outputs.mod_name, 
+                 steps.version_info.outputs.mod_version) }}
+          version: ${{ format('v{0}', 
+                    steps.version_info.outputs.mod_version) }}
+          version-type: release
+
+          loaders: fabric
+          game-versions: ${{ steps.version_info.outputs.game_versions }}
+          dependencies: |-
+            carpet(required)
