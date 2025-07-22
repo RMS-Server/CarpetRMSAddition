@@ -29,7 +29,7 @@ jobs:
         id: get_versions
         run: |
           # Get all version directories (folders with numeric names like 1.17.1, 1.20.1, etc.)
-          VERSIONS=$(find versions -maxdepth 1 -type d -name "[0-9]*" | xargs -I {} basename {} | sort -V | jq -R . | jq -s .)
+          VERSIONS=$(find versions -maxdepth 1 -type d -name "[0-9]*" | xargs -I {} basename {} | sort -V | jq -R . | jq -s -c .)
           echo "versions=$VERSIONS" >> $GITHUB_OUTPUT
           echo "Found versions: $VERSIONS"
 
