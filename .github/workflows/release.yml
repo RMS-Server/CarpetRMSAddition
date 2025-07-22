@@ -68,7 +68,7 @@ jobs:
   # Matrix Modrinth publish job - publishes each version separately to Modrinth
   publish-modrinth-matrix:
     runs-on: ubuntu-24.04
-    needs: [build-matrix, get-versions]
+    needs: [build-matrix, get-versions, generate-changelog]
     strategy:
       matrix:
         minecraft_version: ${{ fromJson(needs.get-versions.outputs.versions) }}
@@ -132,6 +132,7 @@ jobs:
                     steps.version_info.outputs.mod_version,
                     matrix.minecraft_version) }}
           version-type: release
+          changelog: ${{ needs.generate-changelog.outputs.changelog }}
 
           loaders: fabric
           game-versions: |
@@ -139,10 +140,61 @@ jobs:
           dependencies: |-
             carpet(required)
   
+  # Generate changelog job - creates changelog for use by release jobs
+  generate-changelog:
+    runs-on: ubuntu-24.04
+    outputs:
+      changelog: ${{ steps.changelog.outputs.changelog }}
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      # Extract version info for changelog generation
+      - name: extract version info
+        id: version_info
+        run: |
+          # Get mod version from root gradle.properties
+          MOD_VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2)
+          echo "mod_version=$MOD_VERSION" >> $GITHUB_OUTPUT
+          echo "Mod Version: $MOD_VERSION"
+      
+      - name: generate changelog from commits
+        id: changelog
+        run: |
+          VERSION=${{ steps.version_info.outputs.mod_version }}
+          CURRENT_TAG="v$VERSION"
+          
+          # Check if current tag already exists
+          if git rev-parse "$CURRENT_TAG" >/dev/null 2>&1; then
+            echo "Tag $CURRENT_TAG already exists, using latest commit message"
+            CHANGELOG=$(git log -1 --pretty=format:"%s")
+          else
+            # Get the latest tag (if any)
+            LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+            
+            if [ -z "$LATEST_TAG" ]; then
+              echo "No previous tags found, using all commits"
+              CHANGELOG=$(git log --pretty=format:"- %s" | head -10)
+            else
+              echo "Found previous tag: $LATEST_TAG, generating changelog from $LATEST_TAG to HEAD"
+              CHANGELOG=$(git log --pretty=format:"- %s" "$LATEST_TAG"..HEAD)
+            fi
+          fi
+          
+          if [ -z "$CHANGELOG" ]; then
+            CHANGELOG="Initial release"
+          fi
+          
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
   # Unified GitHub Release job - creates single release with all versions
   github-release:
     runs-on: ubuntu-24.04
-    needs: build-matrix
+    needs: [build-matrix, generate-changelog]
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
@@ -199,37 +251,6 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Version extracted: $VERSION"
       
-      - name: generate changelog from commits
-        if: github.event_name == 'workflow_dispatch'
-        id: changelog
-        run: |
-          VERSION=${{ steps.get_version.outputs.version }}
-          CURRENT_TAG="v$VERSION"
-          
-          # Check if current tag already exists
-          if git rev-parse "$CURRENT_TAG" >/dev/null 2>&1; then
-            echo "Tag $CURRENT_TAG already exists, using latest commit message"
-            CHANGELOG=$(git log -1 --pretty=format:"%s")
-          else
-            # Get the latest tag (if any)
-            LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-            
-            if [ -z "$LATEST_TAG" ]; then
-              echo "No previous tags found, using all commits"
-              CHANGELOG=$(git log --pretty=format:"- %s" | head -10)
-            else
-              echo "Found previous tag: $LATEST_TAG, generating changelog from $LATEST_TAG to HEAD"
-              CHANGELOG=$(git log --pretty=format:"- %s" "$LATEST_TAG"..HEAD)
-            fi
-          fi
-          
-          if [ -z "$CHANGELOG" ]; then
-            CHANGELOG="Initial release"
-          fi
-          
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
       
       # Debug mode check for deleting existing release and tag
       - name: debug mode - skip delete release and tag
@@ -278,7 +299,7 @@ jobs:
           echo "Would create:"
           echo "  - Tag: v$VERSION"
           echo "  - Title: Release v$VERSION"
-          echo "  - Notes: ${{ steps.changelog.outputs.changelog }}"
+          echo "  - Notes: ${{ needs.generate-changelog.outputs.changelog }}"
           echo "  - Assets: versions/*/build/libs/*.jar"
           echo "=================="
 
@@ -291,7 +312,7 @@ jobs:
           # Create tag and release with changelog
           gh release create "v$VERSION" \
             --title "Release v$VERSION" \
-            --notes "${{ steps.changelog.outputs.changelog }}" \
+            --notes "${{ needs.generate-changelog.outputs.changelog }}" \
             versions/*/build/libs/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
