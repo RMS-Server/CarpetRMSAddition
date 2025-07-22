@@ -95,6 +95,7 @@ jobs:
           if git rev-parse "v$VERSION" >/dev/null 2>&1; then
             echo "Deleting existing tag v$VERSION"
             git push --delete origin "v$VERSION" || true
+            git tag -d "v$VERSION" || true
           else
             echo "No existing tag found for v$VERSION"
           fi
