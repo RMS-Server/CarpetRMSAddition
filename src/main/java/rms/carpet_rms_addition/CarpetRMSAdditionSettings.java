@@ -3,7 +3,7 @@ package rms.carpet_rms_addition;
 import carpet.settings.ParsedRule;
 import carpet.settings.Rule;
 import carpet.settings.Validator;
-import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
 import net.minecraft.entity.EntityType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ThreadedAnvilChunkStorage;
@@ -18,8 +18,8 @@ import java.util.Optional;
 //#endif
 public final class CarpetRMSAdditionSettings {
     private static final String RMS = "RMS";
-    private static final ReferenceArrayList<ThreadedAnvilChunkStorage> chunkStorages = new ReferenceArrayList<>();
-    private static final ReferenceArrayList<Spawner> spawners = new ReferenceArrayList<>();
+    private static final ReferenceArraySet<ThreadedAnvilChunkStorage> chunkStorages = new ReferenceArraySet<>();
+    private static final ReferenceArraySet<Spawner> spawners = new ReferenceArraySet<>();
     @SuppressWarnings("unused")
     @Rule(desc = "Override the block light level when spawning monsters", category = {RMS}, options = {"false", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"}, validate = OverrideBlockLightLevelValidator.class)
     public static String overrideMonsterBlockLightLevel = "false";
@@ -50,10 +50,10 @@ public final class CarpetRMSAdditionSettings {
     private static int skyLightLevel = -1;
     private static boolean keepBlockLightLevel = true;
     private static boolean keepSkyLightLevel = true;
-    private static ReferenceArrayList<EntityType<?>> interceptUpdatePacketsEntityTypes = new ReferenceArrayList<>();
-    private static ReferenceArrayList<EntityType<?>> interceptAllPacketsEntityTypes = new ReferenceArrayList<>();
-    private static ReferenceArrayList<EntityType<?>> naturalSpawnBlacklistEntityTypes = new ReferenceArrayList<>();
-    private static ReferenceArrayList<EntityType<?>> usePortalBlacklistEntityTypes = new ReferenceArrayList<>();
+    private static ReferenceArraySet<EntityType<?>> interceptUpdatePacketsEntityTypes = new ReferenceArraySet<>();
+    private static ReferenceArraySet<EntityType<?>> interceptAllPacketsEntityTypes = new ReferenceArraySet<>();
+    private static ReferenceArraySet<EntityType<?>> naturalSpawnBlacklistEntityTypes = new ReferenceArraySet<>();
+    private static ReferenceArraySet<EntityType<?>> usePortalBlacklistEntityTypes = new ReferenceArraySet<>();
 
     public static int getBlockLightLevel() {
         return blockLightLevel;
@@ -71,27 +71,27 @@ public final class CarpetRMSAdditionSettings {
         return keepSkyLightLevel;
     }
 
-    public static void registerChunkStorage(ThreadedAnvilChunkStorage chunkStorage) {
+    public static void registerChunkStorage(final ThreadedAnvilChunkStorage chunkStorage) {
         chunkStorages.add(chunkStorage);
     }
 
-    public static void registerSpawners(List<Spawner> spawners) {
+    public static void registerSpawners(final List<Spawner> spawners) {
         CarpetRMSAdditionSettings.spawners.addAll(spawners);
     }
 
-    public static ReferenceArrayList<EntityType<?>> getInterceptUpdatePacketsEntityTypes() {
+    public static ReferenceArraySet<EntityType<?>> getInterceptUpdatePacketsEntityTypes() {
         return interceptUpdatePacketsEntityTypes;
     }
 
-    public static ReferenceArrayList<EntityType<?>> getInterceptAllPacketsEntityTypes() {
+    public static ReferenceArraySet<EntityType<?>> getInterceptAllPacketsEntityTypes() {
         return interceptAllPacketsEntityTypes;
     }
 
-    public static ReferenceArrayList<EntityType<?>> getNaturalSpawnBlacklistEntityTypes() {
+    public static ReferenceArraySet<EntityType<?>> getNaturalSpawnBlacklistEntityTypes() {
         return naturalSpawnBlacklistEntityTypes;
     }
 
-    public static ReferenceArrayList<EntityType<?>> getUsePortalBlacklistEntityTypes() {
+    public static ReferenceArraySet<EntityType<?>> getUsePortalBlacklistEntityTypes() {
         return usePortalBlacklistEntityTypes;
     }
 
@@ -119,7 +119,7 @@ public final class CarpetRMSAdditionSettings {
 
     private static class OverrideBlockLightLevelValidator extends Validator<String> {
         @Override
-        public String validate(ServerCommandSource source, ParsedRule<String> currentRule, String newValue, String string) {
+        public String validate(final ServerCommandSource source, final ParsedRule<String> currentRule, final String newValue, final String string) {
             blockLightLevel = parseLightLevel(newValue);
             keepBlockLightLevel = blockLightLevel == -1;
             return newValue;
@@ -128,7 +128,7 @@ public final class CarpetRMSAdditionSettings {
 
     private static class OverrideSkyLightLevelValidator extends Validator<String> {
         @Override
-        public String validate(ServerCommandSource source, ParsedRule<String> currentRule, String newValue, String string) {
+        public String validate(final ServerCommandSource source, final ParsedRule<String> currentRule, final String newValue, final String string) {
             skyLightLevel = parseLightLevel(newValue);
             keepSkyLightLevel = skyLightLevel == -1;
             return newValue;
@@ -136,18 +136,18 @@ public final class CarpetRMSAdditionSettings {
     }
 
     private abstract static class EntityListValidator extends Validator<String> {
-        protected abstract void update(ReferenceArrayList<EntityType<?>> entityTypes);
+        protected abstract void update(final ReferenceArraySet<EntityType<?>> entityTypes);
 
         @Override
-        public String validate(ServerCommandSource source, ParsedRule<String> currentRule, String newValue, String string) {
+        public String validate(final ServerCommandSource source, final ParsedRule<String> currentRule, final String newValue, final String string) {
             final String values = newValue.replaceAll("\\s", "");
             if (values.equals("[]")) {
-                this.update(new ReferenceArrayList<>());
+                this.update(new ReferenceArraySet<>());
                 return "[]";
             }
             final int i = values.length() - 1;
             if (values.charAt(0) != '[' || values.charAt(i) != ']') return null;
-            final ReferenceArrayList<EntityType<?>> entityTypes = new ReferenceArrayList<>();
+            final ReferenceArraySet<EntityType<?>> entityTypes = new ReferenceArraySet<>();
             final StringBuilder stringBuilder = new StringBuilder("[");
             boolean first = true;
             for (final String value : values.substring(1, i).split(",")) {
@@ -162,8 +162,7 @@ public final class CarpetRMSAdditionSettings {
                 //#endif
                 if (optionalEntityType.isEmpty()) return null;
                 final EntityType<?> entityType = optionalEntityType.get();
-                if (entityTypes.contains(entityType)) continue;
-                entityTypes.add(entityType);
+                if (!entityTypes.add(entityType)) continue;
                 if (first) {
                     stringBuilder.append(identifier);
                     first = false;
@@ -176,7 +175,7 @@ public final class CarpetRMSAdditionSettings {
 
     private static class InterceptUpdatePacketEntitiesValidator extends EntityListValidator {
         @Override
-        protected void update(ReferenceArrayList<EntityType<?>> entityTypes) {
+        protected void update(final ReferenceArraySet<EntityType<?>> entityTypes) {
             interceptUpdatePacketsEntityTypes = entityTypes;
             for (final ThreadedAnvilChunkStorage chunkStorage : chunkStorages)
                 for (final ThreadedAnvilChunkStorage.EntityTracker entityTracker : chunkStorage.entityTrackers.values())
@@ -186,7 +185,7 @@ public final class CarpetRMSAdditionSettings {
 
     private static class InterceptAllPacketEntitiesValidator extends EntityListValidator {
         @Override
-        protected void update(ReferenceArrayList<EntityType<?>> entityTypes) {
+        protected void update(final ReferenceArraySet<EntityType<?>> entityTypes) {
             interceptAllPacketsEntityTypes = entityTypes;
             for (final ThreadedAnvilChunkStorage chunkStorage : chunkStorages)
                 for (final ThreadedAnvilChunkStorage.EntityTracker entityTracker : chunkStorage.entityTrackers.values()) {
@@ -198,7 +197,7 @@ public final class CarpetRMSAdditionSettings {
 
     private static class NaturalSpawnBlacklistValidator extends EntityListValidator {
         @Override
-        protected void update(ReferenceArrayList<EntityType<?>> entityTypes) {
+        protected void update(final ReferenceArraySet<EntityType<?>> entityTypes) {
             naturalSpawnBlacklistEntityTypes = entityTypes;
             for (final Spawner spawner : spawners)
                 ((NaturalSpawnBlacklistEnforcer) spawner).updateNaturalSpawnBlacklist(entityTypes);
@@ -207,7 +206,7 @@ public final class CarpetRMSAdditionSettings {
 
     private static class UsePortalBlacklistValidator extends EntityListValidator {
         @Override
-        protected void update(ReferenceArrayList<EntityType<?>> entityTypes) {
+        protected void update(final ReferenceArraySet<EntityType<?>> entityTypes) {
             usePortalBlacklistEntityTypes = entityTypes;
             for (final ThreadedAnvilChunkStorage chunkStorage : chunkStorages)
                 for (final ThreadedAnvilChunkStorage.EntityTracker entityTracker : chunkStorage.entityTrackers.values())

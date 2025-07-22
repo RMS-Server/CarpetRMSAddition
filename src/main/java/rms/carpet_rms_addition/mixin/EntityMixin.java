@@ -1,6 +1,6 @@
 package rms.carpet_rms_addition.mixin;
 
-import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
@@ -25,17 +25,17 @@ public abstract class EntityMixin implements UsePortalBlacklistEnforcer {
 
     @SuppressWarnings("AddedMixinMembersNamePattern")
     @Override
-    public void updateUsePortalBlacklist(ReferenceArrayList<EntityType<?>> entityTypes) {
+    public void updateUsePortalBlacklist(final ReferenceArraySet<EntityType<?>> entityTypes) {
         this.isInUsePortalBlacklist = entityTypes.contains(this.type);
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void init(EntityType<?> type, World world, CallbackInfo ci) {
+    private void init(final EntityType<?> type, final World world, final CallbackInfo ci) {
         this.isInUsePortalBlacklist = CarpetRMSAdditionSettings.getUsePortalBlacklistEntityTypes().contains(type);
     }
 
     @Inject(method = "canUsePortals", at = @At("HEAD"), cancellable = true)
-    private void canUsePortals(CallbackInfoReturnable<Boolean> cir) {
+    private void canUsePortals(final CallbackInfoReturnable<Boolean> cir) {
         if (this.isInUsePortalBlacklist) cir.setReturnValue(false);
     }
 }

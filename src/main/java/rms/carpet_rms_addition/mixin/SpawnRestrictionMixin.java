@@ -14,13 +14,13 @@ import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
 @Mixin(SpawnRestriction.class)
 public abstract class SpawnRestrictionMixin {
     @Inject(method = "canSpawn", at = @At("HEAD"), cancellable = true)
-    private static void canSpawn(EntityType<?> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos,
+    private static void canSpawn(final EntityType<?> type, final ServerWorldAccess world, final SpawnReason spawnReason, final BlockPos pos,
                                  //#if MC < 12001
-                                 java.util.Random random,
+                                 final java.util.Random random,
                                  //#else
-                                 //$$ net.minecraft.util.math.random.Random random,
+                                 //$$ final net.minecraft.util.math.random.Random random,
                                  //#endif
-                                 CallbackInfoReturnable<Boolean> cir) {
+                                 final CallbackInfoReturnable<Boolean> cir) {
         if (CarpetRMSAdditionSettings.getNaturalSpawnBlacklistEntityTypes().contains(type)) cir.setReturnValue(false);
     }
 }

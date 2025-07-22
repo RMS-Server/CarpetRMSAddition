@@ -5,7 +5,7 @@ import net.minecraft.world.WorldView;
 import net.minecraft.world.chunk.light.ChunkLightProvider;
 
 public final class LightLevelGetter {
-    public static int get(WorldView instance, BlockPos blockPos, int i) {
+    public static int get(final WorldView instance, final BlockPos blockPos, final int i) {
         final boolean keepBlockLightLevel = CarpetRMSAdditionSettings.isKeepingBlockLightLevel();
         final boolean keepSkyLightLevel = CarpetRMSAdditionSettings.isKeepingSkyLightLevel();
         if (keepBlockLightLevel && keepSkyLightLevel) return instance.getLightLevel(blockPos, i);
@@ -23,7 +23,7 @@ public final class LightLevelGetter {
         return isInsideWorld ? Math.max(CarpetRMSAdditionSettings.getBlockLightLevel(), CarpetRMSAdditionSettings.getSkyLightLevel() - i) : 15;
     }
 
-    public static int get(WorldView instance, BlockPos blockPos) {
+    public static int get(final WorldView instance, final BlockPos blockPos) {
         return get(instance, blockPos, instance.getAmbientDarkness());
     }
 }

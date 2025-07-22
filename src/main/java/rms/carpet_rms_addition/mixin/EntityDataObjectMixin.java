@@ -13,7 +13,7 @@ import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
 @Mixin(EntityDataObject.class)
 public abstract class EntityDataObjectMixin {
     @Redirect(method = "getNbt", at = @At(value = "INVOKE", target = "Lnet/minecraft/predicate/NbtPredicate;entityToNbt(Lnet/minecraft/entity/Entity;)Lnet/minecraft/nbt/NbtCompound;"))
-    private NbtCompound entityToNbt(Entity entity) {
+    private NbtCompound entityToNbt(final Entity entity) {
         final NbtCompound nbtCompound = NbtPredicate.entityToNbt(entity);
         if (CarpetRMSAdditionSettings.enhancedDataGet) {
             //#if MC < 12101

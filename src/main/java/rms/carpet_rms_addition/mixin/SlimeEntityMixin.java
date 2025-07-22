@@ -11,7 +11,7 @@ import rms.carpet_rms_addition.LightLevelGetter;
 @Mixin(SlimeEntity.class)
 public abstract class SlimeEntityMixin {
     @Redirect(method = "canSpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldAccess;getLightLevel(Lnet/minecraft/util/math/BlockPos;)I"))
-    private static int getLightLevel(WorldAccess instance, BlockPos blockPos) {
+    private static int getLightLevel(final WorldAccess instance, final BlockPos blockPos) {
         return LightLevelGetter.get(instance, blockPos);
     }
 }

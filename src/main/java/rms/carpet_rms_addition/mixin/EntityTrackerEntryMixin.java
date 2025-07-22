@@ -1,6 +1,6 @@
 package rms.carpet_rms_addition.mixin;
 
-import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.network.Packet;
@@ -30,20 +30,20 @@ public abstract class EntityTrackerEntryMixin implements UpdateEntityPacketInter
 
     @SuppressWarnings("AddedMixinMembersNamePattern")
     @Override
-    public void updateInterceptUpdatePacketsEntityTypes(ReferenceArrayList<EntityType<?>> entityTypes) {
+    public void updateInterceptUpdatePacketsEntityTypes(final ReferenceArraySet<EntityType<?>> entityTypes) {
         this.interceptUpdate = entityTypes.contains(this.type);
         this.intercept = this.interceptUpdate || this.interceptAll;
     }
 
     @SuppressWarnings("AddedMixinMembersNamePattern")
     @Override
-    public void updateInterceptAllPacketsEntityTypes(ReferenceArrayList<EntityType<?>> entityTypes) {
+    public void updateInterceptAllPacketsEntityTypes(final ReferenceArraySet<EntityType<?>> entityTypes) {
         this.interceptAll = entityTypes.contains(this.type);
         this.intercept = this.interceptUpdate || this.interceptAll;
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void init(ServerWorld world, Entity entity, int tickInterval, boolean alwaysUpdateVelocity, Consumer<Packet<?>> receiver, CallbackInfo ci) {
+    private void init(final ServerWorld world, final Entity entity, final int tickInterval, final boolean alwaysUpdateVelocity, final Consumer<Packet<?>> receiver, final CallbackInfo ci) {
         this.type = entity.getType();
         this.interceptUpdate = CarpetRMSAdditionSettings.getInterceptUpdatePacketsEntityTypes().contains(this.type);
         this.interceptAll = CarpetRMSAdditionSettings.getInterceptAllPacketsEntityTypes().contains(this.type);
@@ -51,7 +51,7 @@ public abstract class EntityTrackerEntryMixin implements UpdateEntityPacketInter
     }
 
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
-    private void tick(CallbackInfo ci) {
+    private void tick(final CallbackInfo ci) {
         if (this.intercept) ci.cancel();
     }
 }

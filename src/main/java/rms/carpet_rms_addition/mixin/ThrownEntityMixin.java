@@ -1,6 +1,6 @@
 package rms.carpet_rms_addition.mixin;
 
-import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;
@@ -21,29 +21,29 @@ public abstract class ThrownEntityMixin extends Entity implements UsePortalBlack
     @Unique
     private boolean isInUsePortalBlacklist;
 
-    private ThrownEntityMixin(EntityType<?> type, World world) {
+    private ThrownEntityMixin(final EntityType<?> type, final World world) {
         super(type, world);
     }
 
     @SuppressWarnings("AddedMixinMembersNamePattern")
     @Override
-    public void updateUsePortalBlacklist(ReferenceArrayList<EntityType<?>> entityTypes) {
+    public void updateUsePortalBlacklist(final ReferenceArraySet<EntityType<?>> entityTypes) {
         this.isInUsePortalBlacklist = entityTypes.contains(this.getType());
     }
 
     @Inject(method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V", at = @At("RETURN"))
-    private void init(EntityType<?> entityType, World world, CallbackInfo ci) {
+    private void init(final EntityType<?> entityType, final World world, final CallbackInfo ci) {
         this.isInUsePortalBlacklist = CarpetRMSAdditionSettings.getUsePortalBlacklistEntityTypes().contains(entityType);
     }
 
     @Inject(method = "<init>(Lnet/minecraft/entity/EntityType;DDDLnet/minecraft/world/World;)V", at = @At("RETURN"))
-    private void init(EntityType<?> type, double x, double y, double z, World world, CallbackInfo ci) {
+    private void init(final EntityType<?> type, final double x, final double y, final double z, final World world, final CallbackInfo ci) {
         this.isInUsePortalBlacklist = CarpetRMSAdditionSettings.getUsePortalBlacklistEntityTypes().contains(type);
     }
 
     //#if MC >= 12104
     //$$ @Inject(method = "canUsePortals", at = @At("HEAD"), cancellable = true)
-    //$$ private void canUsePortals(boolean allowVehicles, org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<Boolean> cir) {
+    //$$ private void canUsePortals(final boolean allowVehicles, final org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<Boolean> cir) {
     //$$     if (this.isInUsePortalBlacklist) cir.setReturnValue(false);
     //$$ }
     //#endif

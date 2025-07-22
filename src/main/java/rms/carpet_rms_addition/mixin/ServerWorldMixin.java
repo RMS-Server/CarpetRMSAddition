@@ -20,20 +20,17 @@ import java.util.concurrent.Executor;
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin {
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void init(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<World> worldKey,
+    private void init(final MinecraftServer server, final Executor workerExecutor, final LevelStorage.Session session, final ServerWorldProperties properties, final RegistryKey<World> worldKey,
                       //#if MC < 12001
-                      net.minecraft.world.dimension.DimensionType dimensionType,
-                      WorldGenerationProgressListener worldGenerationProgressListener,
-                      net.minecraft.world.gen.chunk.ChunkGenerator chunkGenerator,
+                      final net.minecraft.world.dimension.DimensionType dimensionType, final WorldGenerationProgressListener worldGenerationProgressListener, final net.minecraft.world.gen.chunk.ChunkGenerator chunkGenerator,
                       //#else
-                      //$$ net.minecraft.world.dimension.DimensionOptions dimensionOptions,
-                      //$$ WorldGenerationProgressListener worldGenerationProgressListener,
+                      //$$ final net.minecraft.world.dimension.DimensionOptions dimensionOptions, final WorldGenerationProgressListener worldGenerationProgressListener,
                       //#endif
-                      boolean debugWorld, long seed, List<Spawner> spawners, boolean shouldTickTime,
+                      final boolean debugWorld, final long seed, final List<Spawner> spawners, final boolean shouldTickTime,
                       //#if MC >= 12001
-                      //$$ net.minecraft.util.math.random.RandomSequencesState randomSequencesState,
+                      //$$ final net.minecraft.util.math.random.RandomSequencesState randomSequencesState,
                       //#endif
-                      CallbackInfo ci) {
+                      final CallbackInfo ci) {
         CarpetRMSAdditionSettings.registerSpawners(spawners);
     }
 }

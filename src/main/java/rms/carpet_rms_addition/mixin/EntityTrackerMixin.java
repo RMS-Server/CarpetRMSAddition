@@ -1,6 +1,6 @@
 package rms.carpet_rms_addition.mixin;
 
-import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.server.network.EntityTrackerEntry;
@@ -38,7 +38,7 @@ public abstract class EntityTrackerMixin implements AllEntityPacketInterceptor, 
 
     @SuppressWarnings("AddedMixinMembersNamePattern")
     @Override
-    public void updateInterceptAllPacketsEntityTypes(ReferenceArrayList<EntityType<?>> entityTypes) {
+    public void updateInterceptAllPacketsEntityTypes(final ReferenceArraySet<EntityType<?>> entityTypes) {
         final boolean intercept = entityTypes.contains(this.type);
         if (intercept && !this.intercept) {
             for (final EntityTrackingListener listener : this.listeners) {
@@ -54,18 +54,18 @@ public abstract class EntityTrackerMixin implements AllEntityPacketInterceptor, 
 
     @SuppressWarnings("AddedMixinMembersNamePattern")
     @Override
-    public void updateUsePortalBlacklist(ReferenceArrayList<EntityType<?>> entityTypes) {
+    public void updateUsePortalBlacklist(final ReferenceArraySet<EntityType<?>> entityTypes) {
         ((UsePortalBlacklistEnforcer) this.entity).updateUsePortalBlacklist(entityTypes);
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void init(ThreadedAnvilChunkStorage threadedAnvilChunkStorage, Entity entity, int maxDistance, int tickInterval, boolean alwaysUpdateVelocity, CallbackInfo ci) {
+    private void init(final ThreadedAnvilChunkStorage threadedAnvilChunkStorage, final Entity entity, final int maxDistance, final int tickInterval, final boolean alwaysUpdateVelocity, final CallbackInfo ci) {
         this.type = entity.getType();
         this.intercept = CarpetRMSAdditionSettings.getInterceptAllPacketsEntityTypes().contains(this.type);
     }
 
     @Redirect(method = "updateTrackedStatus(Lnet/minecraft/server/network/ServerPlayerEntity;)V", at = @At(value = "INVOKE", target = "Ljava/util/Set;add(Ljava/lang/Object;)Z"))
-    private <E> boolean add(Set<E> instance, E e) {
+    private <E> boolean add(final Set<E> instance, final E e) {
         if (this.intercept) {
             return false;
         }

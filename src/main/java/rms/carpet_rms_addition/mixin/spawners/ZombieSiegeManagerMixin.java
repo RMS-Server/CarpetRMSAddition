@@ -1,8 +1,7 @@
 package rms.carpet_rms_addition.mixin.spawners;
 
-import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
 import net.minecraft.entity.EntityType;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.village.ZombieSiegeManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -20,17 +19,17 @@ public abstract class ZombieSiegeManagerMixin implements NaturalSpawnBlacklistEn
 
     @SuppressWarnings("AddedMixinMembersNamePattern")
     @Override
-    public void updateNaturalSpawnBlacklist(ReferenceArrayList<EntityType<?>> entityTypes) {
+    public void updateNaturalSpawnBlacklist(final ReferenceArraySet<EntityType<?>> entityTypes) {
         this.isInNaturalSpawnBlacklist = entityTypes.contains(EntityType.ZOMBIE);
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void init(CallbackInfo ci) {
+    private void init(final CallbackInfo ci) {
         this.isInNaturalSpawnBlacklist = CarpetRMSAdditionSettings.getNaturalSpawnBlacklistEntityTypes().contains(EntityType.ZOMBIE);
     }
 
     @Inject(method = "spawn(Lnet/minecraft/server/world/ServerWorld;ZZ)I", at = @At("HEAD"), cancellable = true)
-    private void spawn(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals, CallbackInfoReturnable<Integer> cir) {
+    private void spawn(final CallbackInfoReturnable<Integer> cir) {
         if (this.isInNaturalSpawnBlacklist) cir.setReturnValue(0);
     }
 }
