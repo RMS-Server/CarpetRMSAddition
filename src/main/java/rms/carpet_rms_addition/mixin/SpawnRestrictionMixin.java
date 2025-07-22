@@ -21,8 +21,6 @@ public abstract class SpawnRestrictionMixin {
                                  //$$ net.minecraft.util.math.random.Random random,
                                  //#endif
                                  CallbackInfoReturnable<Boolean> cir) {
-        if (CarpetRMSAdditionSettings.getNaturalSpawnBlacklistEntityTypes().contains(type)) {
-            cir.setReturnValue(false);
-        }
+        if (CarpetRMSAdditionSettings.getNaturalSpawnBlacklistEntityTypes().contains(type)) cir.setReturnValue(false);
     }
 }

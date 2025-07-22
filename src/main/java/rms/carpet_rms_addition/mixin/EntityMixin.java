@@ -36,8 +36,6 @@ public abstract class EntityMixin implements UsePortalBlacklistEnforcer {
 
     @Inject(method = "canUsePortals", at = @At("HEAD"), cancellable = true)
     private void canUsePortals(CallbackInfoReturnable<Boolean> cir) {
-        if (this.isInUsePortalBlacklist) {
-            cir.setReturnValue(false);
-        }
+        if (this.isInUsePortalBlacklist) cir.setReturnValue(false);
     }
 }

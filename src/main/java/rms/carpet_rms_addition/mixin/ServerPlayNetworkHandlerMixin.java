@@ -13,8 +13,6 @@ import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
 public abstract class ServerPlayNetworkHandlerMixin {
     @Inject(method = "sendPacket(Lnet/minecraft/network/Packet;)V", at = @At("HEAD"), cancellable = true)
     private void sendPacket(Packet<?> packet, CallbackInfo ci) {
-        if (packet instanceof ParticleS2CPacket && CarpetRMSAdditionSettings.interceptParticlePackets) {
-            ci.cancel();
-        }
+        if (packet instanceof ParticleS2CPacket && CarpetRMSAdditionSettings.interceptParticlePackets) ci.cancel();
     }
 }

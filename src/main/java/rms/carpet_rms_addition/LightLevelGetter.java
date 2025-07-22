@@ -8,9 +8,7 @@ public final class LightLevelGetter {
     public static int get(WorldView instance, BlockPos blockPos, int i) {
         final boolean keepBlockLightLevel = CarpetRMSAdditionSettings.isKeepingBlockLightLevel();
         final boolean keepSkyLightLevel = CarpetRMSAdditionSettings.isKeepingSkyLightLevel();
-        if (keepBlockLightLevel && keepSkyLightLevel) {
-            return instance.getLightLevel(blockPos, i);
-        }
+        if (keepBlockLightLevel && keepSkyLightLevel) return instance.getLightLevel(blockPos, i);
         final int x = blockPos.getX();
         final int z = blockPos.getZ();
         final boolean isInsideWorld = x > -30000000 && z > -30000000 && x < 30000000 && z < 30000000;

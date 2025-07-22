@@ -44,9 +44,7 @@ public abstract class ThrownEntityMixin extends Entity implements UsePortalBlack
     //#if MC >= 12104
     //$$ @Inject(method = "canUsePortals", at = @At("HEAD"), cancellable = true)
     //$$ private void canUsePortals(boolean allowVehicles, org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<Boolean> cir) {
-    //$$     if (this.isInUsePortalBlacklist) {
-    //$$         cir.setReturnValue(false);
-    //$$     }
+    //$$     if (this.isInUsePortalBlacklist) cir.setReturnValue(false);
     //$$ }
     //#endif
 }

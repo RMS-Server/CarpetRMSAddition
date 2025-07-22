@@ -1,33 +1,33 @@
 {
-	"schemaVersion": 1,
-	"id": "$id",
-	"version": "$version",
-	"name": "Carpet RMS Addition",
-	"description": "Carpet extension mod developed by RMS.",
-	"authors": [
-		"Jog Ming",
-		"XRain",
-		"VY"
-	],
-	"contact": {
-		"homepage": "https://github.com/RMS-Server/CarpetRMSAddition",
-		"sources": "https://github.com/RMS-Server/CarpetRMSAddition"
-	},
-	"license": "CC0-1.0",
-	"icon": "assets/$id/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"rms.carpet_rms_addition.CarpetRMSAddition"
-		]
-	},
-	"mixins": [
-		"${id}.mixins.json"
-	],
-	"accessWidener": "${id}.accesswidener",
-	"depends": {
-		"fabricloader": ">=$loader_version",
-		"carpet": ">=$carpet_version",
-		"minecraft": "$minecraft_version"
-	}
+  "schemaVersion": 1,
+  "id": "$id",
+  "version": "$version",
+  "name": "Carpet RMS Addition",
+  "description": "Carpet extension mod developed by RMS.",
+  "authors": [
+    "Jog Ming",
+    "XRain",
+    "VY"
+  ],
+  "contact": {
+    "homepage": "https://github.com/RMS-Server/CarpetRMSAddition",
+    "sources": "https://github.com/RMS-Server/CarpetRMSAddition"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/$id/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "rms.carpet_rms_addition.CarpetRMSAddition"
+    ]
+  },
+  "mixins": [
+    "${id}.mixins.json"
+  ],
+  "accessWidener": "${id}.accesswidener",
+  "depends": {
+    "fabricloader": ">=$loader_version",
+    "carpet": ">=$carpet_version",
+    "minecraft": "$minecraft_version"
+  }
 }

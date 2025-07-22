@@ -146,17 +146,13 @@ public final class CarpetRMSAdditionSettings {
                 return "[]";
             }
             final int i = values.length() - 1;
-            if (values.charAt(0) != '[' || values.charAt(i) != ']') {
-                return null;
-            }
+            if (values.charAt(0) != '[' || values.charAt(i) != ']') return null;
             final ReferenceArrayList<EntityType<?>> entityTypes = new ReferenceArrayList<>();
-            final StringBuilder sb = new StringBuilder("[");
+            final StringBuilder stringBuilder = new StringBuilder("[");
             boolean first = true;
             for (final String value : values.substring(1, i).split(",")) {
                 final Identifier identifier = Identifier.tryParse(value);
-                if (identifier == null) {
-                    return null;
-                }
+                if (identifier == null) return null;
                 //#if MC < 12001
                 final Optional<EntityType<?>> optionalEntityType = net.minecraft.util.registry.Registry.ENTITY_TYPE.getOrEmpty(identifier);
                 //#elseif MC < 12104
@@ -164,23 +160,17 @@ public final class CarpetRMSAdditionSettings {
                 //#else
                 //$$ final Optional<EntityType<?>> optionalEntityType = net.minecraft.registry.Registries.ENTITY_TYPE.getOptionalValue(identifier);
                 //#endif
-                if (optionalEntityType.isEmpty()) {
-                    return null;
-                }
+                if (optionalEntityType.isEmpty()) return null;
                 final EntityType<?> entityType = optionalEntityType.get();
-                if (entityTypes.contains(entityType)) {
-                    continue;
-                }
+                if (entityTypes.contains(entityType)) continue;
                 entityTypes.add(entityType);
                 if (first) {
-                    sb.append(identifier);
+                    stringBuilder.append(identifier);
                     first = false;
-                } else {
-                    sb.append(',').append(identifier);
-                }
+                } else stringBuilder.append(',').append(identifier);
             }
             this.update(entityTypes);
-            return sb.append(']').toString();
+            return stringBuilder.append(']').toString();
         }
     }
 
@@ -188,11 +178,9 @@ public final class CarpetRMSAdditionSettings {
         @Override
         protected void update(ReferenceArrayList<EntityType<?>> entityTypes) {
             interceptUpdatePacketsEntityTypes = entityTypes;
-            for (final ThreadedAnvilChunkStorage chunkStorage : chunkStorages) {
-                for (final ThreadedAnvilChunkStorage.EntityTracker entityTracker : chunkStorage.entityTrackers.values()) {
+            for (final ThreadedAnvilChunkStorage chunkStorage : chunkStorages)
+                for (final ThreadedAnvilChunkStorage.EntityTracker entityTracker : chunkStorage.entityTrackers.values())
                     ((UpdateEntityPacketInterceptor) entityTracker.entry).updateInterceptUpdatePacketsEntityTypes(entityTypes);
-                }
-            }
         }
     }
 
@@ -200,12 +188,11 @@ public final class CarpetRMSAdditionSettings {
         @Override
         protected void update(ReferenceArrayList<EntityType<?>> entityTypes) {
             interceptAllPacketsEntityTypes = entityTypes;
-            for (final ThreadedAnvilChunkStorage chunkStorage : chunkStorages) {
+            for (final ThreadedAnvilChunkStorage chunkStorage : chunkStorages)
                 for (final ThreadedAnvilChunkStorage.EntityTracker entityTracker : chunkStorage.entityTrackers.values()) {
                     ((AllEntityPacketInterceptor) entityTracker).updateInterceptAllPacketsEntityTypes(entityTypes);
                     ((AllEntityPacketInterceptor) entityTracker.entry).updateInterceptAllPacketsEntityTypes(entityTypes);
                 }
-            }
         }
     }
 
@@ -213,9 +200,8 @@ public final class CarpetRMSAdditionSettings {
         @Override
         protected void update(ReferenceArrayList<EntityType<?>> entityTypes) {
             naturalSpawnBlacklistEntityTypes = entityTypes;
-            for (final Spawner spawner : spawners) {
+            for (final Spawner spawner : spawners)
                 ((NaturalSpawnBlacklistEnforcer) spawner).updateNaturalSpawnBlacklist(entityTypes);
-            }
         }
     }
 
@@ -223,11 +209,9 @@ public final class CarpetRMSAdditionSettings {
         @Override
         protected void update(ReferenceArrayList<EntityType<?>> entityTypes) {
             usePortalBlacklistEntityTypes = entityTypes;
-            for (final ThreadedAnvilChunkStorage chunkStorage : chunkStorages) {
-                for (final ThreadedAnvilChunkStorage.EntityTracker entityTracker : chunkStorage.entityTrackers.values()) {
+            for (final ThreadedAnvilChunkStorage chunkStorage : chunkStorages)
+                for (final ThreadedAnvilChunkStorage.EntityTracker entityTracker : chunkStorage.entityTrackers.values())
                     ((UsePortalBlacklistEnforcer) entityTracker).updateUsePortalBlacklist(entityTypes);
-                }
-            }
         }
     }
 }

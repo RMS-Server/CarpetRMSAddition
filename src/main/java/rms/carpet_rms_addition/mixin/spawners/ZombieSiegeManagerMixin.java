@@ -31,8 +31,6 @@ public abstract class ZombieSiegeManagerMixin implements NaturalSpawnBlacklistEn
 
     @Inject(method = "spawn(Lnet/minecraft/server/world/ServerWorld;ZZ)I", at = @At("HEAD"), cancellable = true)
     private void spawn(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals, CallbackInfoReturnable<Integer> cir) {
-        if (this.isInNaturalSpawnBlacklist) {
-            cir.setReturnValue(0);
-        }
+        if (this.isInNaturalSpawnBlacklist) cir.setReturnValue(0);
     }
 }

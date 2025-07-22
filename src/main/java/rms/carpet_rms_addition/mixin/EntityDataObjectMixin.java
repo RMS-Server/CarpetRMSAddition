@@ -19,15 +19,11 @@ public abstract class EntityDataObjectMixin {
             //#if MC < 12101
             nbtCompound.putBoolean("inNetherPortal", entity.inNetherPortal);
             //#else
-            //$$ if (entity.portalManager == null) {
-            //$$     nbtCompound.putBoolean("inNetherPortal", false);
-            //$$ } else {
-            //$$     nbtCompound.putBoolean("inNetherPortal", entity.portalManager.isInPortal());
-            //$$ }
+            //$$ if (entity.portalManager == null) nbtCompound.putBoolean("inNetherPortal", false);
+            //$$ else nbtCompound.putBoolean("inNetherPortal", entity.portalManager.isInPortal());
             //#endif
-            if (entity instanceof BoatEntity boatEntity) {
+            if (entity instanceof BoatEntity boatEntity)
                 nbtCompound.putFloat("ticksUnderwater", boatEntity.ticksUnderwater);
-            }
         }
         return nbtCompound;
     }
