@@ -11,8 +11,8 @@ permissions:
   contents: write
   
 jobs:
-  # Matrix build and publish job - builds and publishes each version independently
-  build-and-publish-matrix:
+  # Matrix build job - builds each version in parallel
+  build-matrix:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
@@ -32,6 +32,29 @@ jobs:
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
       
+      - name: build for ${{ matrix.minecraft_version }}
+        run: ./gradlew :${{ matrix.minecraft_version }}:build
+      
+      - name: upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.minecraft_version }}
+          path: versions/${{ matrix.minecraft_version }}/build/libs/*.jar
+          if-no-files-found: error
+  
+  # Matrix Modrinth publish job - publishes each version separately to Modrinth
+  publish-modrinth-matrix:
+    runs-on: ubuntu-24.04
+    needs: build-matrix
+    strategy:
+      matrix:
+        minecraft_version: ["1.17.1", "1.20.1", "1.21.1", "1.21.4"]
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
       # Extract version info for publishing
       - name: extract version info
         id: version_info
@@ -48,92 +71,12 @@ jobs:
           echo "Mod ID: $MOD_ID" 
           echo "Minecraft Version: ${{ matrix.minecraft_version }}"
       
-      - name: build for ${{ matrix.minecraft_version }}
-        run: ./gradlew :${{ matrix.minecraft_version }}:build
-      
-      # For manual trigger: extract version and create release per minecraft version
-      - name: extract version from gradle.properties
-        if: github.event_name == 'workflow_dispatch'
-        id: get_version
-        run: |
-          VERSION=${{ steps.version_info.outputs.mod_version }}
-          MC_VERSION=${{ matrix.minecraft_version }}
-          RELEASE_TAG="v${VERSION}-mc${MC_VERSION}"
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "release_tag=$RELEASE_TAG" >> $GITHUB_OUTPUT
-          echo "Version extracted: $VERSION for MC $MC_VERSION"
-      
-      - name: generate changelog from latest commit
-        if: github.event_name == 'workflow_dispatch'
-        id: changelog
-        run: |
-          # Get the latest commit message
-          CHANGELOG=$(git log -1 --pretty=format:"%s")
-          
-          if [ -z "$CHANGELOG" ]; then
-            CHANGELOG="Release for Minecraft ${{ matrix.minecraft_version }}"
-          else
-            CHANGELOG="$CHANGELOG (Minecraft ${{ matrix.minecraft_version }})"
-          fi
-          
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-      
-      - name: delete existing release and tag if exists
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          RELEASE_TAG=${{ steps.get_version.outputs.release_tag }}
-          echo "Checking for existing release with tag: $RELEASE_TAG"
-          
-          # Delete release if exists
-          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            echo "Deleting existing release $RELEASE_TAG"
-            gh release delete "$RELEASE_TAG" --yes
-          else
-            echo "No existing release found for $RELEASE_TAG"
-          fi
-          
-          # Delete tag if exists
-          if git rev-parse "$RELEASE_TAG" >/dev/null 2>&1; then
-            echo "Deleting existing tag $RELEASE_TAG"
-            git push --delete origin "$RELEASE_TAG" || true
-            git tag -d "$RELEASE_TAG" || true
-          else
-            echo "No existing tag found for $RELEASE_TAG"
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: create release with changelog
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          RELEASE_TAG=${{ steps.get_version.outputs.release_tag }}
-          MC_VERSION=${{ matrix.minecraft_version }}
-          echo "Creating release for tag: $RELEASE_TAG"
-          
-          # Create tag and release with changelog
-          gh release create "$RELEASE_TAG" \
-            --title "${{ steps.version_info.outputs.mod_name }} v${{ steps.version_info.outputs.mod_version }} for MC $MC_VERSION" \
-            --notes "${{ steps.changelog.outputs.changelog }}" \
-            versions/$MC_VERSION/build/libs/*.jar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      # For published release: upload assets for specific minecraft version
-      - name: upload release assets
-        if: github.event_name == 'release'
-        run: |
-          MC_VERSION=${{ matrix.minecraft_version }}
-          # Check if this minecraft version should be uploaded for this release
-          if [[ "${{ github.event.release.tag_name }}" == *"-mc$MC_VERSION" ]] || [[ "${{ github.event.release.tag_name }}" != *"-mc"* ]]; then
-            echo "Uploading jar for MC $MC_VERSION to release ${{ github.event.release.tag_name }}"
-            gh release upload ${{ github.event.release.tag_name }} versions/$MC_VERSION/build/libs/*.jar
-          else
-            echo "Skipping upload for MC $MC_VERSION as it doesn't match release tag pattern"
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Download specific build artifact
+      - name: download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ matrix.minecraft_version }}
+          path: versions/${{ matrix.minecraft_version }}/build/libs/
       
       # Publish to Modrinth for specific minecraft version
       - name: publish to modrinth
@@ -159,3 +102,143 @@ jobs:
             ${{ matrix.minecraft_version }}
           dependencies: |-
             carpet(required)
+  
+  # Unified GitHub Release job - creates single release with all versions
+  github-release:
+    runs-on: ubuntu-24.04
+    needs: build-matrix
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      # Extract version info for publishing
+      - name: extract version info
+        id: version_info
+        run: |
+          # Get mod version from root gradle.properties
+          MOD_VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2)
+          MOD_ID=$(grep '^id=' gradle.properties | cut -d'=' -f2)
+          
+          echo "mod_version=$MOD_VERSION" >> $GITHUB_OUTPUT
+          echo "mod_id=$MOD_ID" >> $GITHUB_OUTPUT
+          echo "mod_name=Carpet RMS Addition" >> $GITHUB_OUTPUT
+          
+          # Get all supported minecraft versions from folder names
+          GAME_VERSIONS=$(find versions -maxdepth 1 -type d -name "[0-9]*" | xargs -I {} basename {} | sort -V | tr '\n' '\n')
+          echo "game_versions<<EOF" >> $GITHUB_OUTPUT
+          echo "$GAME_VERSIONS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          echo "Mod Version: $MOD_VERSION"
+          echo "Mod ID: $MOD_ID" 
+          echo "Game Versions: $GAME_VERSIONS"
+      
+      # Download all build artifacts
+      - name: download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+      
+      # Reorganize artifacts to match expected structure
+      - name: reorganize artifacts
+        run: |
+          mkdir -p versions
+          for version_dir in artifacts/build-*/; do
+            version=$(basename "$version_dir" | sed 's/build-//')
+            mkdir -p "versions/$version/build/libs"
+            cp "$version_dir"*.jar "versions/$version/build/libs/"
+          done
+          
+          # List all jar files for verification
+          find versions -name "*.jar" -type f
+      
+      # For manual trigger: extract version and create unified release
+      - name: extract version from gradle.properties
+        if: github.event_name == 'workflow_dispatch'
+        id: get_version
+        run: |
+          VERSION=${{ steps.version_info.outputs.mod_version }}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version extracted: $VERSION"
+      
+      - name: generate changelog from commits
+        if: github.event_name == 'workflow_dispatch'
+        id: changelog
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          CURRENT_TAG="v$VERSION"
+          
+          # Check if current tag already exists
+          if git rev-parse "$CURRENT_TAG" >/dev/null 2>&1; then
+            echo "Tag $CURRENT_TAG already exists, using latest commit message"
+            CHANGELOG=$(git log -1 --pretty=format:"%s")
+          else
+            # Get the latest tag (if any)
+            LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+            
+            if [ -z "$LATEST_TAG" ]; then
+              echo "No previous tags found, using all commits"
+              CHANGELOG=$(git log --pretty=format:"- %s" | head -10)
+            else
+              echo "Found previous tag: $LATEST_TAG, generating changelog from $LATEST_TAG to HEAD"
+              CHANGELOG=$(git log --pretty=format:"- %s" "$LATEST_TAG"..HEAD)
+            fi
+          fi
+          
+          if [ -z "$CHANGELOG" ]; then
+            CHANGELOG="Initial release"
+          fi
+          
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: delete existing release and tag if exists
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          echo "Checking for existing release with tag: v$VERSION"
+          
+          # Delete release if exists
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "Deleting existing release v$VERSION"
+            gh release delete "v$VERSION" --yes
+          else
+            echo "No existing release found for v$VERSION"
+          fi
+          
+          # Delete tag if exists
+          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+            echo "Deleting existing tag v$VERSION"
+            git push --delete origin "v$VERSION" || true
+            git tag -d "v$VERSION" || true
+          else
+            echo "No existing tag found for v$VERSION"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: create release with changelog
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          echo "Creating release for version: v$VERSION"
+          
+          # Create tag and release with changelog
+          gh release create "v$VERSION" \
+            --title "Release v$VERSION" \
+            --notes "${{ steps.changelog.outputs.changelog }}" \
+            versions/*/build/libs/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      # For published release: just upload assets
+      - name: upload release assets
+        if: github.event_name == 'release'
+        run: |
+          # Upload all jar files to the release
+          gh release upload ${{ github.event.release.tag_name }} versions/*/build/libs/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
