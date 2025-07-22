@@ -41,8 +41,10 @@ jobs:
           echo "mod_name=Carpet RMS Addition" >> $GITHUB_OUTPUT
           
           # Get all supported minecraft versions from folder names
-          GAME_VERSIONS=$(find versions -maxdepth 1 -type d -name "[0-9]*" | xargs -I {} basename {} | sort -V | tr '\n' ',' | sed 's/,$//')
-          echo "game_versions=$GAME_VERSIONS" >> $GITHUB_OUTPUT
+          GAME_VERSIONS=$(find versions -maxdepth 1 -type d -name "[0-9]*" | xargs -I {} basename {} | sort -V | tr '\n' '\n')
+          echo "game_versions<<EOF" >> $GITHUB_OUTPUT
+          echo "$GAME_VERSIONS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
           
           echo "Mod Version: $MOD_VERSION"
           echo "Mod ID: $MOD_ID" 
@@ -140,7 +142,8 @@ jobs:
           version-type: release
 
           loaders: fabric
-          game-versions: ${{ steps.version_info.outputs.game_versions }}
+          game-versions: |
+            ${{ steps.version_info.outputs.game_versions }}
           game-version-filter: any
           dependencies: |-
             carpet(required)
