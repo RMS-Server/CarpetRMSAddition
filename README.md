@@ -1,5 +1,5 @@
 # Carpet RMS Addition
-[![Modrinth](https://img.shields.io/modrinth/dt/ij9knTzG?label=Modrinth%20Downloads)](https://modrinth.com/project/ij9knTzG)
+[![Modrinth](https://img.shields.io/modrinth/dt/ij9knTzG?label=Modrinth%20downloads)](https://modrinth.com/project/ij9knTzG)
 
 **English** | [简体中文](README-CN.md)
 
