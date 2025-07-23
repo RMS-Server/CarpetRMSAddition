@@ -37,7 +37,6 @@ jobs:
           distribution: 'temurin'
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
-      
       - name: Build For ${{ matrix.minecraft_version }}
         run: ./gradlew :${{ matrix.minecraft_version }}:build
 
