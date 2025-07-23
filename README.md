@@ -1,4 +1,6 @@
 # Carpet RMS Addition
+[![Modrinth](https://img.shields.io/modrinth/dt/ij9knTzG?label=Modrinth%20Downloads)](https://modrinth.com/project/ij9knTzG)
+
 **English** | [简体中文](README-CN.md)
 
 A [Minecraft](https://www.minecraft.net/en-us) [Carpet Mod](https://github.com/gnembon/fabric-carpet) [extension](https://github.com/gnembon/fabric-carpet/wiki/List-of-Carpet-extensions).

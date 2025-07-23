@@ -11,9 +11,9 @@ jobs:
     outputs:
       versions: ${{ steps.Get_Versions.outputs.versions }}
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Get Minecraft Versions
+      - name: Get Minecraft versions
         id: Get_Versions
         run: |
           VERSIONS=$(find versions -maxdepth 1 -type d -name "[0-9]*.[0-9]*" | xargs -I {} basename {} | sort -V | jq -R . | jq -s -c .)
@@ -25,22 +25,22 @@ jobs:
       matrix:
         minecraft_version: ${{ fromJson(needs.Get-Versions.outputs.versions) }}
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Validate Gradle Wrapper
+      - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v4
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           java-version: '22'
           distribution: 'temurin'
-      - name: Make Gradle Wrapper Executable
+      - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
-      - name: Build For ${{ matrix.minecraft_version }}
+      - name: Build for ${{ matrix.minecraft_version }}
         run: ./gradlew :${{ matrix.minecraft_version }}:build
-      - name: Upload Build Artifacts
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-${{ matrix.minecraft_version }}
@@ -53,11 +53,11 @@ jobs:
       matrix:
         minecraft_version: ${{ fromJson(needs.Get-Versions.outputs.versions) }}
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Extract Version Info
+      - name: Extract version info
         id: Version_Info
         run: |
           MOD_VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2)
@@ -65,12 +65,12 @@ jobs:
           echo "mod_version=$MOD_VERSION" >> $GITHUB_OUTPUT
           echo "mod_id=$MOD_ID" >> $GITHUB_OUTPUT
           echo "mod_name=Carpet RMS Addition" >> $GITHUB_OUTPUT
-      - name: Download Build Artifact
+      - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: build-${{ matrix.minecraft_version }}
           path: versions/${{ matrix.minecraft_version }}/build/libs/
-      - name: Publish To Modrinth
+      - name: Publish to Modrinth
         if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
@@ -95,11 +95,11 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [Build-Matrix, Get-Versions]
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Extract Version Info
+      - name: Extract version info
         id: Version_Info
         run: |
           MOD_VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2)
@@ -107,11 +107,11 @@ jobs:
           echo "mod_version=$MOD_VERSION" >> $GITHUB_OUTPUT
           echo "mod_id=$MOD_ID" >> $GITHUB_OUTPUT
           echo "mod_name=Carpet RMS Addition" >> $GITHUB_OUTPUT
-      - name: Download All Artifacts
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts/
-      - name: Reorganize Artifacts
+      - name: Reorganize artifacts
         run: |
           mkdir -p release_files
           for version_dir in artifacts/build-*/; do
@@ -119,7 +119,7 @@ jobs:
             cp "$version_dir"*.jar release_files/
           done
           find release_files -name "*.jar" -type f
-      - name: Delete Existing Release And Tag If Exists
+      - name: Delete existing release and tag
         if: github.event_name == 'workflow_dispatch'
         run: |
           VERSION=${{ steps.Version_Info.outputs.mod_version }}
@@ -133,7 +133,7 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload To Existing GitHub Release
+      - name: Upload to existing GitHub release
         if: github.event_name == 'release'
         run: |
           VERSION=${{ steps.Version_Info.outputs.mod_version }}
@@ -143,7 +143,7 @@ jobs:
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Publish To GitHub Release Using MC-Publish
+      - name: Publish to GitHub release
         if: github.event_name == 'workflow_dispatch'
         uses: Kir-Antipov/mc-publish@v3.3
         with:

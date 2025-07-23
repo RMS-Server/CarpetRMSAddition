@@ -10,9 +10,9 @@ jobs:
     outputs:
       versions: ${{ steps.Get_Versions.outputs.versions }}
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Get Minecraft Versions
+      - name: Get Minecraft versions
         id: Get_Versions
         run: |
           VERSIONS=$(find versions -maxdepth 1 -type d -name "[0-9]*.[0-9]*" | xargs -I {} basename {} | sort -V | jq -R . | jq -s -c .)
@@ -24,19 +24,19 @@ jobs:
       matrix:
         minecraft_version: ${{ fromJson(needs.Get-Versions.outputs.versions) }}
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Validate Gradle Wrapper
+      - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v4
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           java-version: '22'
           distribution: 'temurin'
-      - name: Make Gradle Wrapper Executable
+      - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
-      - name: Build For ${{ matrix.minecraft_version }}
+      - name: Build for ${{ matrix.minecraft_version }}
         run: ./gradlew :${{ matrix.minecraft_version }}:build
 
