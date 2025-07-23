@@ -120,6 +120,7 @@ jobs:
           done
           find release_files -name "*.jar" -type f
       - name: Delete Existing Release And Tag If Exists
+        if: github.event_name == 'workflow_dispatch'
         run: |
           VERSION=${{ steps.Version_Info.outputs.mod_version }}
           TAG="v$VERSION"
@@ -132,8 +133,18 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Publish To GitHub Release
-        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+      - name: Upload To Existing GitHub Release
+        if: github.event_name == 'release'
+        run: |
+          VERSION=${{ steps.Version_Info.outputs.mod_version }}
+          TAG="v$VERSION"
+          for jar_file in release_files/*.jar; do
+            gh release upload "$TAG" "$jar_file" --clobber
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish To GitHub Release Using MC-Publish
+        if: github.event_name == 'workflow_dispatch'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
