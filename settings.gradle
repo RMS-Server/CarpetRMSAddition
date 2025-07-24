@@ -23,9 +23,9 @@ pluginManagement {
     }
 }
 file('versions').eachDir { dir ->
-    String version = ":$dir.name"
+    final String version = ":$dir.name"
     include version
-    ProjectDescriptor projectDescriptor = project version
+    final ProjectDescriptor projectDescriptor = project version
     projectDescriptor.projectDir = dir
     projectDescriptor.buildFileName = '../../common.gradle'
 }

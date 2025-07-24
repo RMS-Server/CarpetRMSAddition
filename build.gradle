@@ -6,7 +6,7 @@ plugins {
 }
 preprocess {
     strictExtraMappings = false
-    ArrayList<Node> versions = []
+    final ArrayList<Node> versions = []
     file('versions').eachDir { versions << createNode(it.name, it.name.split(/\./).with { String[] string -> (string[0] + string[1].padLeft(2, '0') + string[2].padLeft(2, '0')).toInteger() }, '') }
     versions.sort { it.mcVersion }
     for (int i = 0; i < versions.size() - 1; ++i) {
