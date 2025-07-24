@@ -1,0 +1,2 @@
+carpet.settings.SettingsManager carpet.api.settings.SettingsManager
+net.minecraft.server.network.ServerPlayNetworkHandler net.minecraft.server.network.ServerCommonNetworkHandler

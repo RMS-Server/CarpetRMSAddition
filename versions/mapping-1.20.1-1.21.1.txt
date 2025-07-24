@@ -1,1 +1,0 @@
-net.minecraft.server.network.ServerPlayNetworkHandler net.minecraft.server.network.ServerCommonNetworkHandler
