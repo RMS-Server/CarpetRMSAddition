@@ -1,1 +1,4 @@
 carpet.settings.SettingsManager carpet.api.settings.SettingsManager
+net.minecraft.world.gen.CatSpawner net.minecraft.world.spawner.CatSpawner
+net.minecraft.world.gen.PhantomSpawner net.minecraft.world.spawner.PhantomSpawner
+net.minecraft.world.gen.PillagerSpawner net.minecraft.world.spawner.PatrolSpawner

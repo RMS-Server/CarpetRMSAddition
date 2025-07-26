@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
 import rms.carpet_rms_addition.NaturalSpawnBlacklistEnforcer;
 
@@ -29,7 +28,19 @@ public abstract class PillagerSpawnerMixin implements NaturalSpawnBlacklistEnfor
     }
 
     @Inject(method = "spawn", at = @At("HEAD"), cancellable = true)
-    private void spawn(final CallbackInfoReturnable<Integer> cir) {
-        if (this.isInNaturalSpawnBlacklist) cir.setReturnValue(0);
+    private void spawn(
+            //#if MC < 12106
+            final org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<Integer> cir
+            //#else
+            //$$ final CallbackInfo ci
+            //#endif
+    ) {
+        if (this.isInNaturalSpawnBlacklist) {
+            //#if MC < 12106
+            cir.setReturnValue(0);
+            //#else
+            //$$ ci.cancel();
+            //#endif
+        }
     }
 }

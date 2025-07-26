@@ -33,17 +33,20 @@ public abstract class HostileEntityMixin {
         return LightLevelGetter.get(instance, blockPos);
     }
 
-    //#if MC < 12001
-    @Redirect(method = "getPathfindingFavor", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldView;getBrightness(Lnet/minecraft/util/math/BlockPos;)F"))
-    private float getBrightness(final WorldView instance, final BlockPos pos) {
+    @Redirect(method = "getPathfindingFavor", at = @At(value = "INVOKE",
+            //#if MC < 12001
+            target = "Lnet/minecraft/world/WorldView;getBrightness(Lnet/minecraft/util/math/BlockPos;)F"
+            //#else
+            //$$ target = "Lnet/minecraft/world/WorldView;getPhototaxisFavor(Lnet/minecraft/util/math/BlockPos;)F"
+            //#endif
+    ))
+    private float getPhototaxisFavor(final WorldView instance, final BlockPos pos) {
+        //#if MC < 12001
         return instance.getDimension().getBrightness(LightLevelGetter.get(instance, pos));
+        //#else
+        //$$ final float f = LightLevelGetter.get(instance, pos) / 15.0F;
+        //$$ final float g = f / (4.0F - 3.0F * f);
+        //$$ return net.minecraft.util.math.MathHelper.lerp(instance.getDimension().ambientLight(), g, 1.0F) - 0.5F;
+        //#endif
     }
-    //#else
-    //$$ @Redirect(method = "getPathfindingFavor", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldView;getPhototaxisFavor(Lnet/minecraft/util/math/BlockPos;)F"))
-    //$$ private float getPhototaxisFavor(final WorldView instance, final BlockPos blockPos) {
-    //$$     final float f = LightLevelGetter.get(instance, blockPos) / 15.0F;
-    //$$     final float g = f / (4.0F - 3.0F * f);
-    //$$     return net.minecraft.util.math.MathHelper.lerp(instance.getDimension().ambientLight(), g, 1.0F) - 0.5F;
-    //$$ }
-    //#endif
 }
