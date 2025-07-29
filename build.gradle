@@ -8,10 +8,10 @@ plugins {
 @SuppressWarnings("GroovyUnusedAssignment")
 static Map<String, String> chainMappings(final List<File> files) {
     Map<String, String> current = [:]
-    files.each { file ->
+    files.each { final file ->
         if (!file.exists()) return
         final Map<String, String> mappings = [:]
-        file.eachLine { line ->
+        file.eachLine { final line ->
             if (!line.trim() || line.startsWith('#')) return
             final String[] parts = line.split(' ', 2)
             if (parts.length == 2) mappings[parts[0]] = parts[1]
@@ -20,8 +20,8 @@ static Map<String, String> chainMappings(final List<File> files) {
             current.putAll(mappings)
         } else {
             final Map<String, String> chained = [:]
-            current.each { key, value -> chained[key] = mappings.getOrDefault(value, value) }
-            mappings.each { key, value -> if (!current.containsValue(key)) chained[key] = value }
+            current.each { final key, final value -> chained[key] = mappings.getOrDefault(value, value) }
+            mappings.each { final key, final value -> if (!current.containsValue(key)) chained[key] = value }
             current = chained
         }
     }
@@ -32,11 +32,11 @@ static File createTempMapping(final String from, final String to, final List<Fil
     final Map<String, String> mappings = chainMappings(chain)
     final File temp = new File(root.projectDir, "versions/.temp-mapping-${from}-${to}.txt")
     temp.parentFile.mkdirs()
-    
+
     if (temp.exists()) temp.delete()
-    
-    temp.withWriter { writer -> mappings.each { old, newName -> writer.writeLine("${old} ${newName}") } }
-    
+
+    temp.withWriter { final writer -> mappings.each { final old, final newName -> writer.writeLine("${old} ${newName}") } }
+
     final boolean[] deleted = [false]
     final Runnable deleteAction = {
         if (!deleted[0] && temp.exists()) {
@@ -44,17 +44,17 @@ static File createTempMapping(final String from, final String to, final List<Fil
             deleted[0] = true
         }
     }
-    
+
     Runtime.getRuntime().addShutdownHook(new Thread(deleteAction))
     root.gradle.buildFinished { deleteAction.run() }
-    
+
     return temp
 }
 
 preprocess {
     strictExtraMappings = false
     final ArrayList<Node> versions = []
-    file('versions').eachDir { versions << createNode(it.name, it.name.split(/\./).with { String[] s -> (s[0] + s[1].padLeft(2, '0') + s[2].padLeft(2, '0')).toInteger() }, '') }
+    file('versions').eachDir { versions << createNode(it.name, it.name.split(/\./).with { final String[] s -> (s[0] + s[1].padLeft(2, '0') + s[2].padLeft(2, '0')).toInteger() }, '') }
     versions.sort { it.mcVersion }
     final Node base = versions[0]
     for (int i = 1; i < versions.size(); ++i) {
