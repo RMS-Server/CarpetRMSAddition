@@ -30,7 +30,7 @@ if (mcVersion < 11700) {
 processResources {
     from "${id}.accesswidener"
     filesMatching('fabric.mod.json') {
-        expand id: id, version: version, minecraft_version: project.name, carpet_version: carpet_core_version.replaceAll(/^\d+\.\d+\.\d+-(\d+\.\d+\.\d+).*$/, '$1'), loader_version: loader_version
+        expand id: id, version: version, minecraft_version: project.name, carpet_version: carpet_core_version.replaceAll(/^\d+\.\d+(?:\.\d+)?-(\d+\.\d+\.\d+).*$/, '$1'), loader_version: loader_version
     }
     filesMatching("${id}.mixins.json") {
         expand java_version: javaCompatibility.ordinal() + 1
