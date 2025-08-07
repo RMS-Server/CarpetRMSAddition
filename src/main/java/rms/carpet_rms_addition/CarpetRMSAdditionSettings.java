@@ -136,8 +136,6 @@ public final class CarpetRMSAdditionSettings {
     }
 
     private abstract static class EntityListValidator extends Validator<String> {
-        protected abstract void update(final ReferenceArraySet<EntityType<?>> entityTypes);
-
         @Override
         public String validate(final ServerCommandSource source, final ParsedRule<String> currentRule, final String newValue, final String string) {
             final String values = newValue.replaceAll("\\s", "");
@@ -171,6 +169,8 @@ public final class CarpetRMSAdditionSettings {
             this.update(entityTypes);
             return stringBuilder.append(']').toString();
         }
+
+        protected abstract void update(final ReferenceArraySet<EntityType<?>> entityTypes);
     }
 
     private static class InterceptUpdatePacketEntitiesValidator extends EntityListValidator {
