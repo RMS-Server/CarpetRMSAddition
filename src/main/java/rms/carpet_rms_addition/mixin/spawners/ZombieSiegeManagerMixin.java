@@ -15,32 +15,32 @@ import rms.carpet_rms_addition.NaturalSpawnBlacklistEnforcer;
 public abstract class ZombieSiegeManagerMixin implements NaturalSpawnBlacklistEnforcer {
     @Unique
     private boolean isInNaturalSpawnBlacklist;
-
+    
     @SuppressWarnings("AddedMixinMembersNamePattern")
     @Override
     public void updateNaturalSpawnBlacklist(final ReferenceArraySet<EntityType<?>> entityTypes) {
         this.isInNaturalSpawnBlacklist = entityTypes.contains(EntityType.ZOMBIE);
     }
-
+    
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(final CallbackInfo ci) {
         this.isInNaturalSpawnBlacklist = CarpetRMSAdditionSettings.getNaturalSpawnBlacklistEntityTypes()
-                .contains(EntityType.ZOMBIE);
+            .contains(EntityType.ZOMBIE);
     }
-
+    
     @Inject(
-            //#if MC < 12106
-            method = "spawn(Lnet/minecraft/server/world/ServerWorld;ZZ)I",
-            //#else
-            //$$ method = "spawn(Lnet/minecraft/server/world/ServerWorld;ZZ)V",
-            //#endif
-            at = @At("HEAD"), cancellable = true)
+        //#if MC < 12106
+        method = "spawn(Lnet/minecraft/server/world/ServerWorld;ZZ)I",
+        //#else
+        //$$ method = "spawn(Lnet/minecraft/server/world/ServerWorld;ZZ)V",
+        //#endif
+        at = @At("HEAD"), cancellable = true)
     private void spawn(
-            //#if MC < 12106
-            final org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<Integer> cir
-            //#else
-            //$$ final CallbackInfo ci
-            //#endif
+        //#if MC < 12106
+        final org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<Integer> cir
+        //#else
+        //$$ final CallbackInfo ci
+        //#endif
     ) {
         if (this.isInNaturalSpawnBlacklist) {
             //#if MC < 12106

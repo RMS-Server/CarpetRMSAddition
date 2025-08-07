@@ -8,7 +8,7 @@ public final class LightLevelGetter {
     public static int get(final WorldView instance, final BlockPos blockPos) {
         return get(instance, blockPos, instance.getAmbientDarkness());
     }
-
+    
     public static int get(final WorldView instance, final BlockPos blockPos, final int i) {
         final boolean keepBlockLightLevel = CarpetRMSAdditionSettings.isKeepingBlockLightLevel();
         final boolean keepSkyLightLevel = CarpetRMSAdditionSettings.isKeepingSkyLightLevel();
