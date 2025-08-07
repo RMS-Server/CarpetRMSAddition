@@ -21,29 +21,29 @@ public final class CarpetRMSAdditionSettings {
     private static final ReferenceArraySet<ThreadedAnvilChunkStorage> chunkStorages = new ReferenceArraySet<>();
     private static final ReferenceArraySet<Spawner> spawners = new ReferenceArraySet<>();
     @SuppressWarnings("unused")
-    @Rule(desc = "Override the block light level when spawning monsters", category = {RMS}, options = {"false", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"}, validate = OverrideBlockLightLevelValidator.class)
+    @Rule(desc = "Override the block light level when spawning monsters", category = { RMS }, options = { "false", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }, validate = OverrideBlockLightLevelValidator.class)
     public static String overrideMonsterBlockLightLevel = "false";
     @SuppressWarnings("unused")
-    @Rule(desc = "Override the sky light level when spawning monsters", category = {RMS}, options = {"false", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"}, validate = OverrideSkyLightLevelValidator.class)
+    @Rule(desc = "Override the sky light level when spawning monsters", category = { RMS }, options = { "false", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }, validate = OverrideSkyLightLevelValidator.class)
     public static String overrideMonsterSkyLightLevel = "false";
-    @Rule(desc = "Make /data get return more nbt", category = {RMS})
+    @Rule(desc = "Make /data get return more nbt", category = { RMS })
     public static boolean enhancedDataGet = false;
     @SuppressWarnings("unused")
-    @Rule(desc = "A list of entities, in the form of [minecraft:boat,minecraft:creeper], for each the server will not send update packets", category = {RMS}, validate = InterceptUpdatePacketEntitiesValidator.class)
+    @Rule(desc = "A list of entities, in the form of [minecraft:boat,minecraft:creeper], for each the server will not send update packets", category = { RMS }, validate = InterceptUpdatePacketEntitiesValidator.class)
     public static String interceptUpdatePacketEntities = "[]";
     @SuppressWarnings("unused")
-    @Rule(desc = "A list of entities, in the form of [minecraft:boat,minecraft:creeper], for each the server will not send all packets and immediately remove from client. This takes precedence over interceptUpdatePacketEntities", category = {RMS}, validate = InterceptAllPacketEntitiesValidator.class)
+    @Rule(desc = "A list of entities, in the form of [minecraft:boat,minecraft:creeper], for each the server will not send all packets and immediately remove from client. This takes precedence over interceptUpdatePacketEntities", category = { RMS }, validate = InterceptAllPacketEntitiesValidator.class)
     public static String interceptAllPacketEntities = "[]";
     @SuppressWarnings("unused")
-    @Rule(desc = "A list of entities, in the form of [minecraft:cat,minecraft:creeper], that will not naturally spawn", category = {RMS}, validate = NaturalSpawnBlacklistValidator.class)
+    @Rule(desc = "A list of entities, in the form of [minecraft:cat,minecraft:creeper], that will not naturally spawn", category = { RMS }, validate = NaturalSpawnBlacklistValidator.class)
     public static String naturalSpawnBlacklist = "[]";
     @SuppressWarnings("unused")
-    @Rule(desc = "A list of entities, in the form of [minecraft:boat,minecraft:creeper], that will not go through portals", category = {RMS}, validate = UsePortalBlacklistValidator.class)
+    @Rule(desc = "A list of entities, in the form of [minecraft:boat,minecraft:creeper], that will not go through portals", category = { RMS }, validate = UsePortalBlacklistValidator.class)
     public static String usePortalBlacklist = "[]";
-    @Rule(desc = "Stops all particle packets from being sent", category = {RMS})
+    @Rule(desc = "Stops all particle packets from being sent", category = { RMS })
     public static boolean interceptParticlePackets = false;
     //#if MC < 11802
-    @Rule(desc = "Port the behavior of falling blocks from 1.18.2+", category = {RMS})
+    @Rule(desc = "Port the behavior of falling blocks from 1.18.2+", category = { RMS })
     public static boolean fallingBlockBackport = false;
     //#endif
     private static int blockLightLevel = -1;
@@ -54,47 +54,47 @@ public final class CarpetRMSAdditionSettings {
     private static ReferenceArraySet<EntityType<?>> interceptAllPacketsEntityTypes = new ReferenceArraySet<>();
     private static ReferenceArraySet<EntityType<?>> naturalSpawnBlacklistEntityTypes = new ReferenceArraySet<>();
     private static ReferenceArraySet<EntityType<?>> usePortalBlacklistEntityTypes = new ReferenceArraySet<>();
-
+    
     public static int getBlockLightLevel() {
         return blockLightLevel;
     }
-
+    
     public static int getSkyLightLevel() {
         return skyLightLevel;
     }
-
+    
     public static boolean isKeepingBlockLightLevel() {
         return keepBlockLightLevel;
     }
-
+    
     public static boolean isKeepingSkyLightLevel() {
         return keepSkyLightLevel;
     }
-
+    
     public static void registerChunkStorage(final ThreadedAnvilChunkStorage chunkStorage) {
         chunkStorages.add(chunkStorage);
     }
-
+    
     public static void registerSpawners(final List<Spawner> spawners) {
         CarpetRMSAdditionSettings.spawners.addAll(spawners);
     }
-
+    
     public static ReferenceArraySet<EntityType<?>> getInterceptUpdatePacketsEntityTypes() {
         return interceptUpdatePacketsEntityTypes;
     }
-
+    
     public static ReferenceArraySet<EntityType<?>> getInterceptAllPacketsEntityTypes() {
         return interceptAllPacketsEntityTypes;
     }
-
+    
     public static ReferenceArraySet<EntityType<?>> getNaturalSpawnBlacklistEntityTypes() {
         return naturalSpawnBlacklistEntityTypes;
     }
-
+    
     public static ReferenceArraySet<EntityType<?>> getUsePortalBlacklistEntityTypes() {
         return usePortalBlacklistEntityTypes;
     }
-
+    
     private static int parseLightLevel(final String lightLevel) {
         return switch (lightLevel) {
             case "0" -> 0;
@@ -116,7 +116,7 @@ public final class CarpetRMSAdditionSettings {
             default -> -1;
         };
     }
-
+    
     private static class OverrideBlockLightLevelValidator extends Validator<String> {
         @Override
         public String validate(final ServerCommandSource source, final ParsedRule<String> currentRule, final String newValue, final String string) {
@@ -125,7 +125,7 @@ public final class CarpetRMSAdditionSettings {
             return newValue;
         }
     }
-
+    
     private static class OverrideSkyLightLevelValidator extends Validator<String> {
         @Override
         public String validate(final ServerCommandSource source, final ParsedRule<String> currentRule, final String newValue, final String string) {
@@ -134,10 +134,8 @@ public final class CarpetRMSAdditionSettings {
             return newValue;
         }
     }
-
+    
     private abstract static class EntityListValidator extends Validator<String> {
-        protected abstract void update(final ReferenceArraySet<EntityType<?>> entityTypes);
-
         @Override
         public String validate(final ServerCommandSource source, final ParsedRule<String> currentRule, final String newValue, final String string) {
             final String values = newValue.replaceAll("\\s", "");
@@ -171,8 +169,10 @@ public final class CarpetRMSAdditionSettings {
             this.update(entityTypes);
             return stringBuilder.append(']').toString();
         }
+        
+        protected abstract void update(final ReferenceArraySet<EntityType<?>> entityTypes);
     }
-
+    
     private static class InterceptUpdatePacketEntitiesValidator extends EntityListValidator {
         @Override
         protected void update(final ReferenceArraySet<EntityType<?>> entityTypes) {
@@ -182,7 +182,7 @@ public final class CarpetRMSAdditionSettings {
                     ((UpdateEntityPacketInterceptor) entityTracker.entry).updateInterceptUpdatePacketsEntityTypes(entityTypes);
         }
     }
-
+    
     private static class InterceptAllPacketEntitiesValidator extends EntityListValidator {
         @Override
         protected void update(final ReferenceArraySet<EntityType<?>> entityTypes) {
@@ -194,7 +194,7 @@ public final class CarpetRMSAdditionSettings {
                 }
         }
     }
-
+    
     private static class NaturalSpawnBlacklistValidator extends EntityListValidator {
         @Override
         protected void update(final ReferenceArraySet<EntityType<?>> entityTypes) {
@@ -203,7 +203,7 @@ public final class CarpetRMSAdditionSettings {
                 ((NaturalSpawnBlacklistEnforcer) spawner).updateNaturalSpawnBlacklist(entityTypes);
         }
     }
-
+    
     private static class UsePortalBlacklistValidator extends EntityListValidator {
         @Override
         protected void update(final ReferenceArraySet<EntityType<?>> entityTypes) {

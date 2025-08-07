@@ -17,28 +17,28 @@ public abstract class HostileEntityMixin {
     private static int getLightLevel(final ServerWorldAccess instance, final LightType lightLayer, final BlockPos blockPos) {
         return switch (lightLayer) {
             case BLOCK ->
-                    CarpetRMSAdditionSettings.isKeepingBlockLightLevel() ? instance.getLightLevel(LightType.BLOCK, blockPos) : CarpetRMSAdditionSettings.getBlockLightLevel();
+                CarpetRMSAdditionSettings.isKeepingBlockLightLevel() ? instance.getLightLevel(LightType.BLOCK, blockPos) : CarpetRMSAdditionSettings.getBlockLightLevel();
             case SKY ->
-                    CarpetRMSAdditionSettings.isKeepingSkyLightLevel() ? instance.getLightLevel(LightType.SKY, blockPos) : CarpetRMSAdditionSettings.getSkyLightLevel();
+                CarpetRMSAdditionSettings.isKeepingSkyLightLevel() ? instance.getLightLevel(LightType.SKY, blockPos) : CarpetRMSAdditionSettings.getSkyLightLevel();
         };
     }
-
+    
     @Redirect(method = "isSpawnDark", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/ServerWorldAccess;getLightLevel(Lnet/minecraft/util/math/BlockPos;I)I"))
     private static int getLightLevel(final ServerWorldAccess instance, final BlockPos blockPos, final int i) {
         return LightLevelGetter.get(instance, blockPos, i);
     }
-
+    
     @Redirect(method = "isSpawnDark", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/ServerWorldAccess;getLightLevel(Lnet/minecraft/util/math/BlockPos;)I"))
     private static int getLightLevel(final ServerWorldAccess instance, final BlockPos blockPos) {
         return LightLevelGetter.get(instance, blockPos);
     }
-
+    
     @Redirect(method = "getPathfindingFavor", at = @At(value = "INVOKE",
-            //#if MC < 12001
-            target = "Lnet/minecraft/world/WorldView;getBrightness(Lnet/minecraft/util/math/BlockPos;)F"
-            //#else
-            //$$ target = "Lnet/minecraft/world/WorldView;getPhototaxisFavor(Lnet/minecraft/util/math/BlockPos;)F"
-            //#endif
+        //#if MC < 12001
+        target = "Lnet/minecraft/world/WorldView;getBrightness(Lnet/minecraft/util/math/BlockPos;)F"
+        //#else
+        //$$ target = "Lnet/minecraft/world/WorldView;getPhototaxisFavor(Lnet/minecraft/util/math/BlockPos;)F"
+        //#endif
     ))
     private float getPhototaxisFavor(final WorldView instance, final BlockPos pos) {
         //#if MC < 12001
