@@ -22,7 +22,7 @@ public abstract class EntityDataObjectMixin {
             //$$ if (entity.portalManager == null) nbtCompound.putBoolean("inNetherPortal", false);
             //$$ else nbtCompound.putBoolean("inNetherPortal", entity.portalManager.isInPortal());
             //#endif
-            if (entity instanceof BoatEntity boatEntity)
+            if (entity instanceof final BoatEntity boatEntity)
                 nbtCompound.putFloat("ticksUnderwater", boatEntity.ticksUnderwater);
         }
         return nbtCompound;
