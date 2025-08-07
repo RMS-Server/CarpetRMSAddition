@@ -24,7 +24,8 @@ public abstract class WanderingTraderManagerMixin implements NaturalSpawnBlackli
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(final CallbackInfo ci) {
-        this.isInNaturalSpawnBlacklist = CarpetRMSAdditionSettings.getNaturalSpawnBlacklistEntityTypes().contains(EntityType.WANDERING_TRADER);
+        this.isInNaturalSpawnBlacklist = CarpetRMSAdditionSettings.getNaturalSpawnBlacklistEntityTypes()
+                .contains(EntityType.WANDERING_TRADER);
     }
 
     @Inject(method = "spawn", at = @At("HEAD"), cancellable = true)

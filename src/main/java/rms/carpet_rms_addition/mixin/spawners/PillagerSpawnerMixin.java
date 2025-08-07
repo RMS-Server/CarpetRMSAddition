@@ -24,7 +24,8 @@ public abstract class PillagerSpawnerMixin implements NaturalSpawnBlacklistEnfor
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(final CallbackInfo ci) {
-        this.isInNaturalSpawnBlacklist = CarpetRMSAdditionSettings.getNaturalSpawnBlacklistEntityTypes().contains(EntityType.PILLAGER);
+        this.isInNaturalSpawnBlacklist = CarpetRMSAdditionSettings.getNaturalSpawnBlacklistEntityTypes()
+                .contains(EntityType.PILLAGER);
     }
 
     @Inject(method = "spawn", at = @At("HEAD"), cancellable = true)

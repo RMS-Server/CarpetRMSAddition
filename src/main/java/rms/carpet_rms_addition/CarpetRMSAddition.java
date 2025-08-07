@@ -21,7 +21,8 @@ public final class CarpetRMSAddition implements CarpetExtension, ModInitializer 
 
     @Override
     public void onInitialize() {
-        final ModMetadata metadata = FabricLoader.getInstance().getModContainer(ID).orElseThrow(IllegalStateException::new).getMetadata();
+        final ModMetadata metadata = FabricLoader.getInstance().getModContainer(ID)
+                .orElseThrow(IllegalStateException::new).getMetadata();
         name = metadata.getName();
         version = metadata.getVersion().getFriendlyString();
         CarpetServer.manageExtension(new CarpetRMSAddition());

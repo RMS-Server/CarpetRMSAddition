@@ -24,7 +24,8 @@ public abstract class PhantomSpawnerMixin implements NaturalSpawnBlacklistEnforc
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(final CallbackInfo ci) {
-        this.isInNaturalSpawnBlacklist = CarpetRMSAdditionSettings.getNaturalSpawnBlacklistEntityTypes().contains(EntityType.PHANTOM);
+        this.isInNaturalSpawnBlacklist = CarpetRMSAdditionSettings.getNaturalSpawnBlacklistEntityTypes()
+                .contains(EntityType.PHANTOM);
     }
 
     @Inject(method = "spawn", at = @At("HEAD"), cancellable = true)

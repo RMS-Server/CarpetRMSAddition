@@ -24,7 +24,8 @@ public abstract class CatSpawnerMixin implements NaturalSpawnBlacklistEnforcer {
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(final CallbackInfo ci) {
-        this.isInNaturalSpawnBlacklist = CarpetRMSAdditionSettings.getNaturalSpawnBlacklistEntityTypes().contains(EntityType.CAT);
+        this.isInNaturalSpawnBlacklist = CarpetRMSAdditionSettings.getNaturalSpawnBlacklistEntityTypes()
+                .contains(EntityType.CAT);
     }
 
     @Inject(
