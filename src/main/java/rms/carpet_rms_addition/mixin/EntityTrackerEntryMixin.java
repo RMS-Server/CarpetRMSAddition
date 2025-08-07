@@ -27,33 +27,33 @@ public abstract class EntityTrackerEntryMixin implements UpdateEntityPacketInter
     private boolean interceptAll;
     @Unique
     private boolean intercept;
-
+    
     @SuppressWarnings("AddedMixinMembersNamePattern")
     @Override
     public void updateInterceptUpdatePacketsEntityTypes(final ReferenceArraySet<EntityType<?>> entityTypes) {
         this.interceptUpdate = entityTypes.contains(this.type);
         this.intercept = this.interceptUpdate || this.interceptAll;
     }
-
+    
     @SuppressWarnings("AddedMixinMembersNamePattern")
     @Override
     public void updateInterceptAllPacketsEntityTypes(final ReferenceArraySet<EntityType<?>> entityTypes) {
         this.interceptAll = entityTypes.contains(this.type);
         this.intercept = this.interceptUpdate || this.interceptAll;
     }
-
+    
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(final ServerWorld world, final Entity entity, final int tickInterval, final boolean alwaysUpdateVelocity, final Consumer<Packet<?>> receiver,
-                      //#if MC >= 12106
-                      //$$ final java.util.function.BiConsumer<Packet<?>, java.util.List<java.util.UUID>> filteredWatchingSender,
-                      //#endif
-                      final CallbackInfo ci) {
+        //#if MC >= 12106
+        //$$ final java.util.function.BiConsumer<Packet<?>, java.util.List<java.util.UUID>> filteredWatchingSender,
+        //#endif
+        final CallbackInfo ci) {
         this.type = entity.getType();
         this.interceptUpdate = CarpetRMSAdditionSettings.getInterceptUpdatePacketsEntityTypes().contains(this.type);
         this.interceptAll = CarpetRMSAdditionSettings.getInterceptAllPacketsEntityTypes().contains(this.type);
         this.intercept = this.interceptUpdate || this.interceptAll;
     }
-
+    
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
     private void tick(final CallbackInfo ci) {
         if (this.intercept) ci.cancel();

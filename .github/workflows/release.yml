@@ -1,7 +1,7 @@
 name: Release
 on:
   release:
-    types: [published]
+    types: [ published ]
   workflow_dispatch:
 permissions:
   contents: write
@@ -60,7 +60,7 @@ jobs:
           if-no-files-found: error
   Publish-Modrinth-Matrix:
     runs-on: ubuntu-24.04
-    needs: [Build-Matrix, Get-Versions]
+    needs: [ Build-Matrix, Get-Versions ]
     strategy:
       matrix:
         minecraft_version: ${{ fromJson(needs.Get-Versions.outputs.versions) }}
@@ -90,13 +90,13 @@ jobs:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           files: |
             versions/${{ matrix.minecraft_version }}/build/libs/*.jar
-          name: ${{ format('{0} v{1} for MC {2}', 
-                 steps.Version_Info.outputs.mod_name, 
-                 steps.Version_Info.outputs.mod_version,
-                 matrix.minecraft_version) }}
-          version: ${{ format('v{0}-mc{1}', 
-                    steps.Version_Info.outputs.mod_version,
-                    matrix.minecraft_version) }}
+          name: ${{ format('{0} v{1} for MC {2}',
+            steps.Version_Info.outputs.mod_name,
+            steps.Version_Info.outputs.mod_version,
+            matrix.minecraft_version) }}
+          version: ${{ format('v{0}-mc{1}',
+            steps.Version_Info.outputs.mod_version,
+            matrix.minecraft_version) }}
           version-type: release
           loaders: fabric
           game-versions: |
@@ -105,7 +105,7 @@ jobs:
             carpet(required)
   Github-Release:
     runs-on: ubuntu-24.04
-    needs: [Build-Matrix, Get-Versions]
+    needs: [ Build-Matrix, Get-Versions ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

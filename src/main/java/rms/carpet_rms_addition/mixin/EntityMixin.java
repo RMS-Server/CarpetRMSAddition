@@ -22,18 +22,18 @@ public abstract class EntityMixin implements UsePortalBlacklistEnforcer {
     private EntityType<?> type;
     @Unique
     private boolean isInUsePortalBlacklist;
-
+    
     @SuppressWarnings("AddedMixinMembersNamePattern")
     @Override
     public void updateUsePortalBlacklist(final ReferenceArraySet<EntityType<?>> entityTypes) {
         this.isInUsePortalBlacklist = entityTypes.contains(this.type);
     }
-
+    
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(final EntityType<?> type, final World world, final CallbackInfo ci) {
         this.isInUsePortalBlacklist = CarpetRMSAdditionSettings.getUsePortalBlacklistEntityTypes().contains(type);
     }
-
+    
     @Inject(method = "canUsePortals", at = @At("HEAD"), cancellable = true)
     private void canUsePortals(final CallbackInfoReturnable<Boolean> cir) {
         if (this.isInUsePortalBlacklist) cir.setReturnValue(false);

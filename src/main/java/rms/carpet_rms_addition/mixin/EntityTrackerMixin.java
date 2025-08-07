@@ -35,7 +35,7 @@ public abstract class EntityTrackerMixin implements AllEntityPacketInterceptor, 
     private EntityType<?> type;
     @Unique
     private boolean intercept;
-
+    
     @SuppressWarnings("AddedMixinMembersNamePattern")
     @Override
     public void updateInterceptAllPacketsEntityTypes(final ReferenceArraySet<EntityType<?>> entityTypes) {
@@ -51,19 +51,19 @@ public abstract class EntityTrackerMixin implements AllEntityPacketInterceptor, 
         }
         this.intercept = intercept;
     }
-
+    
     @SuppressWarnings("AddedMixinMembersNamePattern")
     @Override
     public void updateUsePortalBlacklist(final ReferenceArraySet<EntityType<?>> entityTypes) {
         ((UsePortalBlacklistEnforcer) this.entity).updateUsePortalBlacklist(entityTypes);
     }
-
+    
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(final ThreadedAnvilChunkStorage threadedAnvilChunkStorage, final Entity entity, final int maxDistance, final int tickInterval, final boolean alwaysUpdateVelocity, final CallbackInfo ci) {
         this.type = entity.getType();
         this.intercept = CarpetRMSAdditionSettings.getInterceptAllPacketsEntityTypes().contains(this.type);
     }
-
+    
     @Redirect(method = "updateTrackedStatus(Lnet/minecraft/server/network/ServerPlayerEntity;)V", at = @At(value = "INVOKE", target = "Ljava/util/Set;add(Ljava/lang/Object;)Z"))
     private <E> boolean add(final Set<E> instance, final E e) {
         if (this.intercept) {

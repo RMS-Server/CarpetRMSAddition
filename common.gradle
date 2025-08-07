@@ -1,13 +1,7 @@
 apply plugin: 'fabric-loom'
 apply plugin: 'com.replaymod.preprocess'
-base {
-    archivesName = "$id-$name"
-}
-repositories {
-    maven {
-        url = 'https://masa.dy.fi/maven'
-    }
-}
+base { archivesName = "$id-$name" }
+repositories { maven { url = 'https://masa.dy.fi/maven' } }
 dependencies {
     minecraft "com.mojang:minecraft:$name"
     mappings "net.fabricmc:yarn:$name+build.$yarn_mappings:v2"
@@ -16,30 +10,23 @@ dependencies {
 }
 loom {
     accessWidenerPath = file "${id}.accesswidener"
+    runs {
+        server {
+            property("mixin.debug.export", "true")
+            ideConfigGenerated true
+        }
+        remove client
+    }
 }
 JavaVersion javaCompatibility
-if (mcVersion < 11700) {
-    javaCompatibility = JavaVersion.VERSION_1_8
-} else if (mcVersion < 11800) {
-    javaCompatibility = JavaVersion.VERSION_16
-} else if (mcVersion < 12005) {
-    javaCompatibility = JavaVersion.VERSION_17
-} else {
-    javaCompatibility = JavaVersion.VERSION_21
-}
+if (mcVersion < 11700) javaCompatibility = JavaVersion.VERSION_1_8 else if (mcVersion < 11800) javaCompatibility = JavaVersion.VERSION_16 else if (mcVersion < 12005) javaCompatibility = JavaVersion.VERSION_17 else javaCompatibility = JavaVersion.VERSION_21
 processResources {
     from "${id}.accesswidener"
-    filesMatching('fabric.mod.json') {
-        expand id: id, version: version, minecraft_version: project.name, carpet_version: carpet_core_version.replaceAll(/^\d+\.\d+(?:\.\d+)?-(\d+\.\d+\.\d+).*$/, '$1'), loader_version: loader_version
-    }
-    filesMatching("${id}.mixins.json") {
-        expand java_version: javaCompatibility.ordinal() + 1
-    }
+    filesMatching('fabric.mod.json') { expand id: id, version: version, minecraft_version: project.name, carpet_version: carpet_core_version.replaceAll(/^\d+\.\d+(?:\.\d+)?-(\d+\.\d+\.\d+).*$/, '$1'), loader_version: loader_version }
+    filesMatching("${id}.mixins.json") { expand java_version: javaCompatibility.ordinal() + 1 }
 }
 java {
     sourceCompatibility = javaCompatibility
     targetCompatibility = javaCompatibility
 }
-jar {
-    from '../../LICENSE'
-}
+jar { from '../../LICENSE' }
