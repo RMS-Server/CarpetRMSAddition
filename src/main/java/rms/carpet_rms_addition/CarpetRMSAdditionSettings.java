@@ -46,6 +46,10 @@ public final class CarpetRMSAdditionSettings {
     @Rule(desc = "Port the behavior of falling blocks from 1.18.2+", category = { RMS })
     public static boolean fallingBlockBackport = false;
     //#endif
+    //#if MC < 12101
+    @Rule(desc = "Use offline UUID for fake players instead of querying Mojang API. Prevents server freeze when API is slow or unreachable.", category = { RMS })
+    public static boolean fakePlayerOfflineUUID = false;
+    //#endif
     private static int blockLightLevel = -1;
     private static int skyLightLevel = -1;
     private static boolean keepBlockLightLevel = true;

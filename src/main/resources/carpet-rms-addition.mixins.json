@@ -21,7 +21,9 @@
     "spawners.PhantomSpawnerMixin",
     "spawners.PillagerSpawnerMixin",
     "spawners.WanderingTraderManagerMixin",
-    "spawners.ZombieSiegeManagerMixin"
+    "spawners.ZombieSiegeManagerMixin",
+    "EntityPlayerMPFakeMixin",
+    "PlayerCommandMixin"
   ],
   "injectors": {
     "defaultRequire": 1
