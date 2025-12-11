@@ -15,6 +15,14 @@ Makes `/data get` return an entity's `inNetherPortal`, or, if the entity is a bo
 * Default value: `false`
 * Options: `false`, `true`
 
+### fakePlayerOfflineUUID
+
+Uses offline UUID for fake players instead of querying Mojang API. Prevents server freeze when API is slow or unreachable.
+
+* Available on versions: `<1.21.1`
+* Default value: `false`
+* Options: `false`, `true`
+
 ### fallingBlockBackport
 
 Ports 1.18.2+ falling block behavior to earlier versions.

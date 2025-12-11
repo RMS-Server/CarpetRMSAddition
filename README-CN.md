@@ -15,6 +15,14 @@
 * 默认值：`false`
 * 选项：`false`，`true`
 
+### fakePlayerOfflineUUID
+
+使用离线 UUID 生成假人，而不是查询 Mojang API。可防止 API 响应缓慢或无法访问时服务器卡顿。
+
+* 可用版本：`<1.21.1`
+* 默认值：`false`
+* 选项：`false`，`true`
+
 ### fallingBlockBackport
 
 将 1.18.2+ 的下落方块行为带回低版本。
