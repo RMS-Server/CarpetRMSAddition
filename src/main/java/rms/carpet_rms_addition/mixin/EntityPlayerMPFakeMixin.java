@@ -1,17 +1,6 @@
 package rms.carpet_rms_addition.mixin;
 
 import carpet.patches.EntityPlayerMPFake;
-//#if MC < 12101
-import com.mojang.authlib.GameProfile;
-import net.minecraft.util.UserCache;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
-import rms.carpet_rms_addition.OfflineUUIDHelper;
-
-import java.util.Optional;
-//#endif
-
 import org.spongepowered.asm.mixin.Mixin;
 
 /**
@@ -21,18 +10,10 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(value = EntityPlayerMPFake.class, remap = false)
 public abstract class EntityPlayerMPFakeMixin {
     //#if MC < 12101
-    @Redirect(
-        method = "createFake",
-        at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/util/UserCache;findByName(Ljava/lang/String;)Ljava/util/Optional;"
-        ),
-        remap = true
-    )
-    private static Optional<GameProfile> redirectFindByName(UserCache userCache, String name) {
-        if (CarpetRMSAdditionSettings.fakePlayerOfflineUUID) {
-            return Optional.of(OfflineUUIDHelper.createOfflineProfile(name));
-        }
+    @org.spongepowered.asm.mixin.injection.Redirect(method = "createFake", at = @org.spongepowered.asm.mixin.injection.At(value = "INVOKE", target = "Lnet/minecraft/util/UserCache;findByName(Ljava/lang/String;)Ljava/util/Optional;"), remap = true)
+    private static java.util.Optional<com.mojang.authlib.GameProfile> redirectFindByName(net.minecraft.util.UserCache userCache, String name) {
+        if (rms.carpet_rms_addition.CarpetRMSAdditionSettings.fakePlayerOfflineUUID)
+            return java.util.Optional.of(rms.carpet_rms_addition.OfflineUUIDHelper.createOfflineProfile(name));
         return userCache.findByName(name);
     }
     //#endif

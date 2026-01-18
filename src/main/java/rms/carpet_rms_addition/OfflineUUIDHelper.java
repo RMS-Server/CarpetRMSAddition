@@ -16,7 +16,7 @@ public final class OfflineUUIDHelper {
     /**
      * Generate an offline UUID from a player name.
      * This is the same algorithm used by Minecraft servers in offline mode.
-     * 
+     *
      * @param name the player name
      * @return the offline UUID
      */
@@ -26,7 +26,7 @@ public final class OfflineUUIDHelper {
     
     /**
      * Create a GameProfile with an offline UUID.
-     * 
+     *
      * @param name the player name
      * @return a GameProfile with offline UUID
      */

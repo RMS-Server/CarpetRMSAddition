@@ -47,9 +47,11 @@ public final class CarpetRMSAdditionSettings {
     public static boolean fallingBlockBackport = false;
     //#endif
     //#if MC < 12101
-    @Rule(desc = "Use offline UUID for fake players instead of querying Mojang API. Prevents server freeze when API is slow or unreachable.", category = { RMS })
+    @Rule(desc = "Use offline UUID for fake players instead of querying Mojang API. Prevents server freeze when API is slow or unreachable", category = { RMS })
     public static boolean fakePlayerOfflineUUID = false;
     //#endif
+    @Rule(desc = "Make note blocks respect redstone power when being placed", category = { RMS })
+    public static boolean updateNoteBlockOnPlacement = false;
     private static int blockLightLevel = -1;
     private static int skyLightLevel = -1;
     private static boolean keepBlockLightLevel = true;

@@ -5,11 +5,14 @@
   "mixins": [
     "EntityDataObjectMixin",
     "EntityMixin",
+    "EntityPlayerMPFakeMixin",
     "EntityTrackerEntryMixin",
     "EntityTrackerMixin",
     "FallingBlockEntityMixin",
     "FallingBlockMixin",
     "HostileEntityMixin",
+    "NoteBlockMixin",
+    "PlayerCommandMixin",
     "ServerPlayNetworkHandlerMixin",
     "ServerWorldMixin",
     "SettingsManagerMixin",
@@ -21,9 +24,7 @@
     "spawners.PhantomSpawnerMixin",
     "spawners.PillagerSpawnerMixin",
     "spawners.WanderingTraderManagerMixin",
-    "spawners.ZombieSiegeManagerMixin",
-    "EntityPlayerMPFakeMixin",
-    "PlayerCommandMixin"
+    "spawners.ZombieSiegeManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

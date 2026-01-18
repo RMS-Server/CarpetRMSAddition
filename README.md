@@ -17,7 +17,8 @@ Makes `/data get` return an entity's `inNetherPortal`, or, if the entity is a bo
 
 ### fakePlayerOfflineUUID
 
-Uses offline UUID for fake players instead of querying Mojang API. Prevents server freeze when API is slow or unreachable.
+Uses offline UUID for fake players instead of querying Mojang API. Prevents server freeze when API is slow or
+unreachable.
 
 * Available on versions: `<1.21.1`
 * Default value: `false`
@@ -77,6 +78,14 @@ end-of-light farms.
 
 * Default value: `false`
 * Options: `false`, `0`, `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `10`, `11`, `12`, `13`, `14`, `15`
+
+### updateNoteBlockOnPlacement
+
+Makes note blocks check for redstone power and update blockstate accordingly when being placed. Note that no sound will
+play even if the note block is powered on placement.
+
+* Default value: `false`
+* Options: `false`, `true`
 
 ### usePortalBlacklist
 
