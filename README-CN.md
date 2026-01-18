@@ -78,7 +78,7 @@
 使音符盒被放置时检测充能状态并依此更新状态。需注意的是，即使音符盒放置时处于充能态，也不会发出声音。
 
 * 默认值：`false`
-* 选项：`false`, `true`
+* 选项：`false`，`true`
 
 ### usePortalBlacklist
 
