@@ -74,9 +74,10 @@ jobs:
         run: |
           MOD_VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2)
           MOD_ID=$(grep '^id=' gradle.properties | cut -d'=' -f2)
+          MOD_NAME=$(jq -r '.name' src/main/resources/fabric.mod.json)
           echo "mod_version=$MOD_VERSION" >> $GITHUB_OUTPUT
           echo "mod_id=$MOD_ID" >> $GITHUB_OUTPUT
-          echo "mod_name=Carpet RMS Addition" >> $GITHUB_OUTPUT
+          echo "mod_name=$MOD_NAME" >> $GITHUB_OUTPUT
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
@@ -116,9 +117,10 @@ jobs:
         run: |
           MOD_VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2)
           MOD_ID=$(grep '^id=' gradle.properties | cut -d'=' -f2)
+          MOD_NAME=$(jq -r '.name' src/main/resources/fabric.mod.json)
           echo "mod_version=$MOD_VERSION" >> $GITHUB_OUTPUT
           echo "mod_id=$MOD_ID" >> $GITHUB_OUTPUT
-          echo "mod_name=Carpet RMS Addition" >> $GITHUB_OUTPUT
+          echo "mod_name=$MOD_NAME" >> $GITHUB_OUTPUT
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
