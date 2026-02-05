@@ -7,7 +7,7 @@ plugins {
 preprocess {
     strictExtraMappings = false
     final ArrayList<Node> versions = []
-    file('versions').eachDir { versions << createNode(it.name, it.name.split(/\./).with { String[] string -> (string[0] + string[1].padLeft(2, '0') + string[2].padLeft(2, '0')).toInteger() }, '') }
+    file('versions').eachDir { versions << createNode(it.name, it.name.split(/\./).with { final String[] string -> (string[0] + string[1].padLeft(2, '0') + string[2].padLeft(2, '0')).toInteger() }, '') }
     versions.sort { it.mcVersion }
     for (int i = 0; i < versions.size() - 1; ++i) {
         versions[i].link versions[i + 1], file("versions/mapping-${versions[i].project}-${versions[i + 1].project}.txt")

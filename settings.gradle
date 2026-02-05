@@ -22,7 +22,7 @@ pluginManagement {
         }
     }
 }
-file('versions').eachDir { dir ->
+file('versions').eachDir { final File dir ->
     final String version = ":$dir.name"
     include version
     final ProjectDescriptor projectDescriptor = project version
