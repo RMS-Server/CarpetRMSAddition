@@ -79,6 +79,20 @@ end-of-light farms.
 * Default value: `false`
 * Options: `false`, `0`, `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `10`, `11`, `12`, `13`, `14`, `15`
 
+### selfCheckOnPlacement
+
+Forces dispensers, droppers, and note blocks to check their block state when placed by a player"
+> When these blocks are placed by a player, they normally do not check if they are triggered by a redstone signal, and stay in BUD state.
+> 
+> On _trigger_, they will recieve a neighbor update when placed by a player.
+> 
+> On _silent_, they will not trigger but correct their block state silently.
+> 
+> (In these two modes, note blocks will differ by playing a sound or not.
+
+* Default value: `false`
+* Options: `false`, `trigger`, `silent`
+
 ### updateNoteBlockOnPlacement
 
 Makes note blocks check for redstone power and update blockstate accordingly when being placed. Note that no sound will

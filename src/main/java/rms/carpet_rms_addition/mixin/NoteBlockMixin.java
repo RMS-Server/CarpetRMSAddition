@@ -14,7 +14,7 @@ import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
 public class NoteBlockMixin {
     @Inject(method = "getPlacementState", at = @At("RETURN"), cancellable = true)
     private void getPlacementState(final ItemPlacementContext ctx, final CallbackInfoReturnable<BlockState> cir) {
-        if (CarpetRMSAdditionSettings.updateNoteBlockOnPlacement) cir.setReturnValue(cir.getReturnValue()
+        if ("silent".equals(CarpetRMSAdditionSettings.selfCheckOnPlacement)) cir.setReturnValue(cir.getReturnValue()
             .with(Properties.POWERED, ctx.getWorld().isReceivingRedstonePower(ctx.getBlockPos())));
     }
 }

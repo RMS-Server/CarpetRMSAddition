@@ -3,6 +3,8 @@
   "package": "rms.carpet_rms_addition.mixin",
   "compatibilityLevel": "JAVA_$java_version",
   "mixins": [
+    "BlockSelfCheckMixin",
+    "DispenserBlockMixin",
     "EntityDataObjectMixin",
     "EntityMixin",
     "EntityPlayerMPFakeMixin",

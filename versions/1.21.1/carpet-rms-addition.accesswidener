@@ -5,3 +5,4 @@ accessible field net/minecraft/world/chunk/light/LightingProvider blockLightProv
 accessible field net/minecraft/world/chunk/light/LightingProvider skyLightProvider Lnet/minecraft/world/chunk/light/ChunkLightProvider;
 accessible field net/minecraft/server/world/ServerChunkLoadingManager entityTrackers Lit/unimi/dsi/fastutil/ints/Int2ObjectMap;
 accessible field net/minecraft/server/world/ServerChunkLoadingManager$EntityTracker entry Lnet/minecraft/server/network/EntityTrackerEntry;
+accessible method net/minecraft/block/AbstractBlock neighborUpdate (Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;Lnet/minecraft/util/math/BlockPos;Z)V

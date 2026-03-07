@@ -50,8 +50,8 @@ public final class CarpetRMSAdditionSettings {
     @Rule(desc = "Use offline UUID for fake players instead of querying Mojang API. Prevents server freeze when API is slow or unreachable", category = { RMS })
     public static boolean fakePlayerOfflineUUID = false;
     //#endif
-    @Rule(desc = "Make note blocks respect redstone power when being placed", category = { RMS })
-    public static boolean updateNoteBlockOnPlacement = false;
+    @Rule(desc = "Forces dispensers, droppers, and note blocks to check their block state when placed by a player", extra = { "When these blocks are placed by a player, they normally do not check if they are triggered by a redstone signal, and stay in BUD state.", "On §ntrigger§r, they will recieve a neighbor update when placed by a player.", "On §nsilent§r, they will not trigger but correct their block state silently.", "(In these two modes, note blocks will differ by playing a sound or not.)" }, category = { RMS }, options = { "false", "trigger", "silent" })
+    public static String selfCheckOnPlacement = "false";
     private static int blockLightLevel = -1;
     private static int skyLightLevel = -1;
     private static boolean keepBlockLightLevel = true;
