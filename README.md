@@ -93,14 +93,6 @@ Forces dispensers, droppers, and note blocks to check their block state when pla
 * Default value: `false`
 * Options: `false`, `trigger`, `silent`
 
-### updateNoteBlockOnPlacement
-
-Makes note blocks check for redstone power and update blockstate accordingly when being placed. Note that no sound will
-play even if the note block is powered on placement.
-
-* Default value: `false`
-* Options: `false`, `true`
-
 ### usePortalBlacklist
 
 A blacklist to stop entities on the list from using portals.
