@@ -15,7 +15,9 @@ loom {
             property("mixin.debug.export", "true")
             ideConfigGenerated true
         }
-        remove client
+        client {
+            ideConfigGenerated true
+        }
     }
 }
 JavaVersion javaCompatibility
