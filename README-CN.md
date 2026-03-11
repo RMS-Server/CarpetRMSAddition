@@ -31,6 +31,14 @@
 * 默认值：`false`
 * 选项：`false`，`true`
 
+### fireballExplosionCreditBackport
+
+移植 1.19.3 及以上版本的火球爆炸行为：在创建爆炸时，爆炸的击杀归因会记在火球自身（以及其拥有者）身上。
+
+* 可用版本：`<1.19.3`
+* 默认值：`false`
+* 选项：`false`，`true`
+
 ### interceptAllPacketEntities
 
 拦截列表中实体发送的所有包。这将会覆盖 `interceptUpdatePacketEntities`。在带宽受限时或许有用。

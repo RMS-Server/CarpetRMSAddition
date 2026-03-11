@@ -52,6 +52,10 @@ public final class CarpetRMSAdditionSettings {
     //#endif
     @Rule(desc = "Forces dispensers, droppers, and note blocks to check their block state when placed by a player", extra = { "When these blocks are placed by a player, they normally do not check if they are triggered by a redstone signal, and stay in BUD state.", "On §ntrigger§r, they will recieve a neighbor update when placed by a player.", "On §nsilent§r, they will not trigger but correct their block state silently.", "(In these two modes, note blocks will differ by playing a sound or not.)" }, category = { RMS }, options = { "false", "trigger", "silent" })
     public static String selfCheckOnPlacement = "false";
+    //#if MC < 11903
+    @Rule(desc = "Ports the behavior of fireball explosions from 1.19.3+, where they give credit to itself (and its owner) when creating an explosion", category = { RMS })
+    public static boolean fireballExplosionCreditBackport = false;
+    //#endif
     private static int blockLightLevel = -1;
     private static int skyLightLevel = -1;
     private static boolean keepBlockLightLevel = true;

@@ -12,6 +12,7 @@
     "EntityTrackerMixin",
     "FallingBlockEntityMixin",
     "FallingBlockMixin",
+    "FireballEntityMixin",
     "HostileEntityMixin",
     "NoteBlockMixin",
     "PlayerCommandMixin",
