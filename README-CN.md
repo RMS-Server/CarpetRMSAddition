@@ -15,6 +15,13 @@
 * 默认值：`false`
 * 选项：`false`，`true`
 
+### endPlatformBreakingBackport
+
+移植 1.21 pre1 版本末地传送门生成黑曜石平台的过程中，在破坏方块时会掉落物品的行为。
+
+* 默认值：`false`
+* 选项：`false`，`true`
+
 ### fakePlayerOfflineUUID
 
 使用离线 UUID 生成假人，而不是查询 Mojang API。可防止 API 响应缓慢或无法访问时服务器卡顿。
