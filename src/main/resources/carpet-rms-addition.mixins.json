@@ -17,6 +17,7 @@
     "NoteBlockMixin",
     "PlayerCommandMixin",
     "ServerPlayNetworkHandlerMixin",
+    "ServerWorldEndPortalBackportMixin",
     "ServerWorldMixin",
     "SettingsManagerMixin",
     "SlimeEntityMixin",

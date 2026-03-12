@@ -15,6 +15,13 @@ Makes `/data get` return an entity's `inNetherPortal`, or, if the entity is a bo
 * Default value: `false`
 * Options: `false`, `true`
 
+### endPlatformBreakingBackport
+
+Ports the behavior of end portals from 1.21 pre1, where the end platform drops items when breaking blocks.
+
+* Default value: `false`
+* Options: `false`, `true`
+
 ### fakePlayerOfflineUUID
 
 Uses offline UUID for fake players instead of querying Mojang API. Prevents server freeze when API is slow or
@@ -34,7 +41,7 @@ Ports 1.18.2+ falling block behavior to earlier versions.
 
 ### fireballExplosionCreditBackport
 
-Ports the behavior of fireball explosions from 1.19.3+, where they give credit to itself (and its owner) when creating an explosion
+Ports the behavior of fireball explosions from 1.19.3+, where they give credit to itself (and its owner) when creating an explosion.
 
 * Available on versions: `<1.19.3`
 * Default value: `false`

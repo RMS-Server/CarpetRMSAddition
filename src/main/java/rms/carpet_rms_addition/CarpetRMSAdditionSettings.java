@@ -56,6 +56,12 @@ public final class CarpetRMSAdditionSettings {
     @Rule(desc = "Ports the behavior of fireball explosions from 1.19.3+, where they give credit to itself (and its owner) when creating an explosion", category = { RMS })
     public static boolean fireballExplosionCreditBackport = false;
     //#endif
+    //#if MC < 12100
+    @Rule(desc = "Ports the behavior of end portals from 1.21 pre1, where the end platform drops items when breaking blocks", category = { RMS })
+    public static boolean endPlatformBreakingBackport = false;
+    //#endif
+    
+    
     private static int blockLightLevel = -1;
     private static int skyLightLevel = -1;
     private static boolean keepBlockLightLevel = true;
