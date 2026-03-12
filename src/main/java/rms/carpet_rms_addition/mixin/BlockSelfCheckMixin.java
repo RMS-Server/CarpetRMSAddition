@@ -17,27 +17,27 @@ import rms.carpet_rms_addition.CarpetRMSAdditionSettings;
 public class BlockSelfCheckMixin {
     @SuppressWarnings("deprecation")
     @Inject(method = "onPlaced", at = @At("HEAD"))
-    private void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
+    private void onPlaced(final World world, final BlockPos pos, final BlockState state, final LivingEntity placer, final ItemStack itemStack, final CallbackInfo ci) {
         if ("trigger".equals(CarpetRMSAdditionSettings.selfCheckOnPlacement)) {
             if (state.isOf(Blocks.NOTE_BLOCK)) Blocks.NOTE_BLOCK.neighborUpdate(state, world, pos, Blocks.NOTE_BLOCK,
                 //#if MC < 12104
                 pos,
                 //#else
-                //$$null,
+                //$$ null,
                 //#endif
                 false);
             else if (state.isOf(Blocks.DISPENSER)) Blocks.DISPENSER.neighborUpdate(state, world, pos, Blocks.DISPENSER,
                 //#if MC < 12104
                 pos,
                 //#else
-                //$$null,
+                //$$ null,
                 //#endif
                 false);
             else if (state.isOf(Blocks.DROPPER)) Blocks.DROPPER.neighborUpdate(state, world, pos, Blocks.DROPPER,
                 //#if MC < 12104
                 pos,
                 //#else
-                //$$null,
+                //$$ null,
                 //#endif
                 false);
         }

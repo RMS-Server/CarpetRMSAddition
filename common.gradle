@@ -16,6 +16,7 @@ loom {
             ideConfigGenerated true
         }
         client {
+            property("mixin.debug.export", "true")
             ideConfigGenerated true
         }
     }

@@ -31,7 +31,7 @@ public abstract class DispenserBlockMixin extends Block {
     
     //#if MC < 12100
     @Inject(method = "onPlaced", at = @At("HEAD"))
-    private void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
+    private void onPlaced(final World world, final BlockPos pos, final BlockState state, final LivingEntity placer, final ItemStack itemStack, final CallbackInfo ci) {
         super.onPlaced(world, pos, state, placer, itemStack);
     }
     //#endif
