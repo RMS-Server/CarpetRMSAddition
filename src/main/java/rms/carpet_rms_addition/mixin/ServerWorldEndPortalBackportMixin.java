@@ -13,6 +13,7 @@ import static net.minecraft.server.world.ServerWorld.END_SPAWN_POS;
 
 @Mixin(ServerWorld.class)
 public class ServerWorldEndPortalBackportMixin {
+    //#if MC < 12100
     @Inject(method = "createEndSpawnPlatform", at = @At("HEAD"))
     private static void createEndSpawnPlatform(ServerWorld world, CallbackInfo ci) {
         if (!CarpetRMSAdditionSettings.endPlatformBreakingBackport) {
@@ -28,4 +29,5 @@ public class ServerWorldEndPortalBackportMixin {
             });
         }
     }
+    //#endif
 }
