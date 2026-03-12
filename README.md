@@ -8,16 +8,16 @@ A [Minecraft](https://www.minecraft.net/en-us) [Carpet Mod](https://github.com/g
 
 ## Rules
 
-### enhancedDataGet
+### endPlatformBreakingBackport
 
-Makes `/data get` return an entity's `inNetherPortal`, or, if the entity is a boat, also `ticksUnderwater`.
+Ports the behavior of end portals from 1.21 pre1, where the end platform drops items when breaking blocks.
 
 * Default value: `false`
 * Options: `false`, `true`
 
-### endPlatformBreakingBackport
+### enhancedDataGet
 
-Ports the behavior of end portals from 1.21 pre1, where the end platform drops items when breaking blocks.
+Makes `/data get` return an entity's `inNetherPortal`, or, if the entity is a boat, also `ticksUnderwater`.
 
 * Default value: `false`
 * Options: `false`, `true`
@@ -96,7 +96,7 @@ end-of-light farms.
 
 ### selfCheckOnPlacement
 
-Forces dispensers, droppers, and note blocks to check their block state when placed by a player"
+Forces dispensers, droppers, and note blocks to check their block state when placed by a player.
 > When these blocks are placed by a player, they normally do not check if they are triggered by a redstone signal, and stay in BUD state.
 > 
 > On _trigger_, they will recieve a neighbor update when placed by a player.
